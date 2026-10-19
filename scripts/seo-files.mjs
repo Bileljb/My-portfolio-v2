@@ -1,6 +1,8 @@
-// Writes dist/sitemap.xml and dist/robots.txt after `vite build`.
+// Writes dist/sitemap.xml and dist/robots.txt after `vite build`, plus a copy of
+// index.html for each project route and as 404.html, so GitHub Pages serves the
+// app on direct visits and refreshes of /projects/<slug>.
 // Site URL comes from VITE_SITE_URL (.env); project slugs from src/data/projects.ts.
-import { readFileSync, writeFileSync } from "node:fs";
+import { mkdirSync, readFileSync, writeFileSync } from "node:fs";
 import { join } from "node:path";
 
 const root = join(import.meta.dirname, "..");
@@ -38,3 +40,12 @@ Sitemap: ${base}/sitemap.xml
 writeFileSync(join(root, "dist", "sitemap.xml"), sitemap);
 writeFileSync(join(root, "dist", "robots.txt"), robots);
 console.log(`✓ sitemap.xml (${paths.length} URLs) and robots.txt written for ${base}`);
+
+const indexHtml = readFileSync(join(root, "dist", "index.html"), "utf8");
+for (const slug of slugs) {
+  const dir = join(root, "dist", "projects", slug);
+  mkdirSync(dir, { recursive: true });
+  writeFileSync(join(dir, "index.html"), indexHtml);
+}
+writeFileSync(join(root, "dist", "404.html"), indexHtml);
+console.log(`✓ index.html copied to ${slugs.length} project routes and 404.html`);
