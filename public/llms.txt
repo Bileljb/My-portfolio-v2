@@ -1,0 +1,14 @@
+# Bilel Jabrane
+
+> Full stack developer based in Tunis, Tunisia (UTC+1), open to remote work. Builds with React (Vite), Node.js, Express, TypeScript, PostgreSQL, Prisma, Tailwind CSS and JWT auth.
+
+## Projects
+
+- [OnePlace](/projects/oneplace): Skool-inspired multi-tenant SaaS where creators monetize paid private communities. Live demo: https://oneplace-c1b.pages.dev/communities
+- [Loupe](/projects/loupe): In progress. Free website health check that explains SEO, speed and accessibility problems in plain language for small business owners, in English, French and Arabic. Live: https://loupe-ashen.vercel.app/en · Code: https://github.com/Bileljb/Loupe
+
+## Contact
+
+- [GitHub](https://github.com/Bileljb/)
+- [Email](mailto:bileljabrane6@gmail.com)
+- [LinkedIn](https://www.linkedin.com/in/bilel-jabrane-a9989b218/)

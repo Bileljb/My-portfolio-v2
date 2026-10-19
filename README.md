@@ -114,5 +114,3 @@ src/
   pages/           Home, ProjectPage, NotFound
   styles/          index.css (Tailwind + light/dark design tokens)
 ```
-
-Design decisions are recorded in `CONTEXT.md`; phase checklist in `TODO.md`.

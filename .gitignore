@@ -1,0 +1,14 @@
+node_modules
+dist
+*.local
+.DS_Store
+.vscode/*
+!.vscode/extensions.json
+
+# Local env (set VITE_SITE_URL in the hosting dashboard instead)
+.env
+
+# Private planning notes
+portfolio-prompt.md
+CONTEXT.md
+TODO.md

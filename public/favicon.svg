@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32">
+  <style>
+    .bg { fill: #F4F1EA; } .fg { stroke: #1B2430; } circle { fill: #E4572E; }
+    @media (prefers-color-scheme: dark) { .bg { fill: #0F1419; } .fg { stroke: #E6E1D6; } circle { fill: #FF7A50; } }
+  </style>
+  <rect class="bg fg" x="1.5" y="1.5" width="29" height="29" rx="3" stroke-width="3"/>
+  <path class="fg" d="M11 11 L6.5 16 L11 21 M21 11 L25.5 16 L21 21 M18 9.5 L14 22.5" fill="none" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/>
+  <circle cx="27" cy="5" r="3"/>
+</svg>

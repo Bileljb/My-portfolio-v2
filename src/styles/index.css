@@ -1,0 +1,131 @@
+@import "tailwindcss";
+
+/* Dark mode follows the data-theme attribute set in index.html / ThemeToggle. */
+@custom-variant dark (&:where([data-theme="dark"], [data-theme="dark"] *));
+
+/*
+ * Theme tokens: "Schematic" direction.
+ * accent        large text, rules, icons, decoration (≥ 3:1)
+ * accent-text   body-size accent text (≥ 4.5:1)
+ * accent-fill / on-accent   filled buttons
+ */
+:root {
+  --color-bg: #f4f1ea;
+  --color-surface: #fbf9f4;
+  --color-fg: #1b2430;
+  --color-muted: #4a5462;
+  --color-rule: #cfcbc1;
+  --color-grid: rgb(27 36 48 / 0.05);
+  --color-accent: #e4572e;
+  --color-accent-text: #b93f1b;
+  --color-accent-fill: #b93f1b;
+  --color-on-accent: #fbf9f4;
+  color-scheme: light;
+}
+
+[data-theme="dark"] {
+  --color-bg: #0f1419;
+  --color-surface: #161d24;
+  --color-fg: #e6e1d6;
+  --color-muted: #a7adb5;
+  --color-rule: #2a333d;
+  --color-grid: rgb(230 225 214 / 0.04);
+  --color-accent: #ff7a50;
+  --color-accent-text: #ff7a50;
+  --color-accent-fill: #ff7a50;
+  --color-on-accent: #0f1419;
+  color-scheme: dark;
+}
+
+@theme inline {
+  --color-bg: var(--color-bg);
+  --color-surface: var(--color-surface);
+  --color-fg: var(--color-fg);
+  --color-muted: var(--color-muted);
+  --color-rule: var(--color-rule);
+  --color-accent: var(--color-accent);
+  --color-accent-text: var(--color-accent-text);
+  --color-accent-fill: var(--color-accent-fill);
+  --color-on-accent: var(--color-on-accent);
+
+  --font-display: "Space Grotesk Variable", ui-sans-serif, system-ui, sans-serif;
+  --font-sans: "Inter Variable", ui-sans-serif, system-ui, sans-serif;
+  --font-mono: "IBM Plex Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
+}
+
+@layer base {
+  html {
+    scroll-padding-top: 5rem;
+    -webkit-text-size-adjust: 100%;
+  }
+
+  body {
+    @apply bg-bg text-fg font-sans antialiased;
+    /* Faint drafting grid */
+    background-image:
+      linear-gradient(var(--color-grid) 1px, transparent 1px),
+      linear-gradient(90deg, var(--color-grid) 1px, transparent 1px);
+    background-size: 24px 24px;
+  }
+
+  h1,
+  h2,
+  h3,
+  h4 {
+    @apply font-display tracking-tight text-balance;
+  }
+
+  ::selection {
+    background: var(--color-accent);
+    color: var(--color-on-accent);
+  }
+
+  :focus-visible {
+    outline: 2px solid var(--color-accent);
+    outline-offset: 3px;
+    border-radius: 2px;
+  }
+}
+
+/*
+ * Motion. Everything here is opt-in via prefers-reduced-motion: no-preference.
+ * .rise    entrance on load; stagger with style={{ "--i": n }}
+ * .reveal  fades sections in as they scroll into view (scroll-driven, no JS;
+ *          browsers without animation-timeline simply show the content)
+ * Never put .rise/.reveal on the LCP element (hero h1).
+ */
+@keyframes rise {
+  from {
+    opacity: 0;
+    translate: 0 14px;
+  }
+  to {
+    opacity: 1;
+    translate: 0 0;
+  }
+}
+
+/* Movement only: content must never sit semi-transparent (contrast) while visible. */
+@keyframes slide-in {
+  from {
+    translate: 0 24px;
+  }
+  to {
+    translate: 0 0;
+  }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .rise {
+    animation: rise 0.5s cubic-bezier(0.2, 0.7, 0.2, 1) both;
+    animation-delay: calc(var(--i, 0) * 70ms);
+  }
+
+  @supports (animation-timeline: view()) {
+    .reveal {
+      animation: slide-in linear both;
+      animation-timeline: view();
+      animation-range: entry 0% entry 35%;
+    }
+  }
+}
