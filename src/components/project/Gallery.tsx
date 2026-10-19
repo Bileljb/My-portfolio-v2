@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import type { Screenshot } from "../../data/types.ts";
+import { assetUrl } from "../../lib/assetUrl.ts";
 
 /** Lazy-loaded screenshot grid; click opens a keyboard-navigable lightbox (native <dialog>). */
 export default function Gallery({ shots, title }: { shots: readonly Screenshot[]; title: string }) {
@@ -30,7 +31,7 @@ export default function Gallery({ shots, title }: { shots: readonly Screenshot[]
                 aria-label={`Enlarge: ${shot.alt}`}
               >
                 <img
-                  src={shot.src}
+                  src={assetUrl(shot.src)}
                   alt={shot.alt}
                   width={shot.width}
                   height={shot.height}
@@ -67,7 +68,7 @@ export default function Gallery({ shots, title }: { shots: readonly Screenshot[]
         {current && (
           <figure className="p-3 sm:p-4">
             <img
-              src={current.src}
+              src={assetUrl(current.src)}
               alt={current.alt}
               width={current.width}
               height={current.height}

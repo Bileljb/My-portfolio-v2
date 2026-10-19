@@ -24,9 +24,19 @@ jobs:
           node-version: 22
           cache: npm
       - run: npm ci
+      # <user>.github.io repos are served at the root, any other repo at /<repo>/.
+      - name: Work out site URL and base path
+        run: |
+          owner="${GITHUB_REPOSITORY_OWNER,,}"
+          repo="${GITHUB_REPOSITORY#*/}"
+          if [ "${repo,,}" = "${owner}.github.io" ]; then
+            echo "BASE_PATH=/" >> "$GITHUB_ENV"
+            echo "VITE_SITE_URL=https://${owner}.github.io" >> "$GITHUB_ENV"
+          else
+            echo "BASE_PATH=/${repo}/" >> "$GITHUB_ENV"
+            echo "VITE_SITE_URL=https://${owner}.github.io/${repo}" >> "$GITHUB_ENV"
+          fi
       - run: npm run build
-        env:
-          VITE_SITE_URL: https://bileljb.github.io
       - uses: actions/upload-pages-artifact@v3
         with:
           path: dist

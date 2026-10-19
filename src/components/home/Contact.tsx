@@ -1,5 +1,6 @@
 import type { ReactNode } from "react";
 import { profile } from "../../data/profile.ts";
+import { assetUrl } from "../../lib/assetUrl.ts";
 import { isTodo, SHOW_TODOS, textOrNull } from "../../lib/todo.ts";
 import { GitHubIcon, LinkedInIcon, MailIcon } from "../ui/icons.tsx";
 import Section from "../ui/Section.tsx";
@@ -39,7 +40,7 @@ export default function Contact() {
           {displayUrl(profile.links.github)}
         </ContactRow>
         {profile.links.cv && (
-          <ContactRow label="CV" href={profile.links.cv}>
+          <ContactRow label="CV" href={assetUrl(profile.links.cv)}>
             Download CV (PDF)
           </ContactRow>
         )}

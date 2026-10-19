@@ -1,4 +1,5 @@
 import { profile } from "../../data/profile.ts";
+import { assetUrl } from "../../lib/assetUrl.ts";
 import { isRenderable } from "../../lib/todo.ts";
 import Section from "../ui/Section.tsx";
 import TodoText from "../ui/TodoText.tsx";
@@ -24,7 +25,7 @@ export default function About() {
         </div>
         {profile.photo && (
           <img
-            src={profile.photo.src}
+            src={assetUrl(profile.photo.src)}
             alt={profile.photo.alt}
             width={256}
             height={256}
