@@ -15,13 +15,11 @@ export const projects: readonly Project[] = [
     order: 1,
     summary:
       "A Skool-inspired platform where creators run paid, private communities with memberships, courses, events and analytics.",
-    // DRAFT
     problem:
-      "Creators who want to run a paid community usually stitch several tools together: one for payments, one for discussions, another for courses. Members get a fragmented experience, and creators spend their time managing tools instead of their community.",
+      "A creator who wants to run a paid community usually ends up combining separate tools: one to take payments, one for discussions, another to host courses. Members have to jump between apps and log in several times, and the creator spends more time keeping the tools in sync than looking after the community.",
     solution:
       "A multi-tenant platform built around one core loop: a creator creates a community, a user pays, access is granted, members engage, and the creator earns. Payments, access control, content and analytics live in one product, so each step of the loop feeds the next.",
-    // DRAFT: wording is mine, adjust as you like.
-    role: "Full stack development across the whole product: the PostgreSQL schema and Prisma models, the Express API with JWT authentication, and every React screen.",
+    role: "Built with a partner, full stack: the PostgreSQL schema and Prisma models, the Express API with JWT authentication in httpOnly cookies, the course system with video resume, creator analytics, the platform admin dashboard, and the React screens on top.",
     features: [
       "Authentication with JWTs in httpOnly cookies",
       "Discover page with search across communities",
@@ -34,29 +32,27 @@ export const projects: readonly Project[] = [
       "Creator analytics: members, revenue and growth over 6 months",
       "Creator settings and admin dashboard",
     ],
-    // TODO: confirm this matches OnePlace exactly (copied from your overall stack).
     stack: [
-      { group: "Frontend", items: ["React", "Vite", "TypeScript", "Tailwind CSS"] },
-      { group: "Backend", items: ["Node.js", "Express", "TypeScript", "JWT auth"] },
+      { group: "Frontend", items: ["React", "Vite", "Tailwind CSS"] },
+      { group: "Backend", items: ["Node.js", "Express", "JWT auth"] },
       { group: "Database", items: ["PostgreSQL", "Prisma"] },
     ],
-    // DRAFT: all four reasons below, replace with your real reasoning.
     decisions: [
       {
         title: "Why PostgreSQL",
-        why: "The data is deeply relational: users, communities, memberships, subscriptions, courses and lessons all reference each other. PostgreSQL gives me foreign keys, constraints and transactions, so a payment and the access it grants are written together or not at all.",
+        why: "Almost everything in OnePlace points at something else: users, communities, memberships, subscriptions, courses and lessons. A relational database fits that shape, and foreign keys plus transactions mean a payment and the access it unlocks are saved together or not at all.",
       },
       {
         title: "Why Prisma",
-        why: "One schema file generates a fully typed client, so database changes surface as TypeScript errors instead of runtime bugs. Migrations are versioned next to the code, so every schema change is reviewable and repeatable.",
+        why: "The whole data model lives in one schema file, and Prisma generates the query client from it, so the code and the database never drift apart. Migrations sit in the repo next to the code, which made schema changes easy to review between the two of us.",
       },
       {
         title: "Why httpOnly cookies for auth tokens",
-        why: "Keeping the JWT in an httpOnly cookie means client-side JavaScript can never read it, so an XSS bug can’t leak the session. With the Secure and SameSite flags set, it’s a safer default than storing tokens in localStorage.",
+        why: "A JWT in an httpOnly cookie can’t be read by JavaScript on the page, so a cross-site scripting bug can’t steal a session. With the Secure and SameSite flags set, that’s a safer default than keeping tokens in localStorage.",
       },
       {
         title: "How multi-tenancy works",
-        why: "All communities share one database, and every tenant-owned row carries its community ID. Membership checks run in middleware on each request, which keeps the schema simple while making sure members only ever see communities they belong to.",
+        why: "All communities share one database, and every row a community owns carries its community ID. Middleware checks membership on each request, so the schema stays simple and members only ever see the communities they belong to.",
       },
     ],
     screenshots: [

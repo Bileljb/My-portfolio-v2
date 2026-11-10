@@ -1,5 +1,6 @@
 import type { CSSProperties } from "react";
 import { profile } from "../../data/profile.ts";
+import { assetUrl } from "../../lib/assetUrl.ts";
 import ButtonLink from "../ui/ButtonLink.tsx";
 import TodoText from "../ui/TodoText.tsx";
 
@@ -43,6 +44,11 @@ export default function Hero() {
           <ButtonLink to="/#contact" variant="secondary">
             Get in touch
           </ButtonLink>
+          {profile.links.cv && (
+            <ButtonLink to={assetUrl(profile.links.cv)} variant="secondary" download>
+              Download CV ↓
+            </ButtonLink>
+          )}
         </div>
       </div>
 

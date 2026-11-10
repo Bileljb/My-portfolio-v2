@@ -40,7 +40,7 @@ export default function Contact() {
           {displayUrl(profile.links.github)}
         </ContactRow>
         {profile.links.cv && (
-          <ContactRow label="CV" href={assetUrl(profile.links.cv)}>
+          <ContactRow label="CV" href={assetUrl(profile.links.cv)} download>
             Download CV (PDF)
           </ContactRow>
         )}
@@ -53,14 +53,16 @@ interface ContactRowProps {
   label: string;
   href: string;
   icon?: ReactNode;
+  download?: boolean;
   children: ReactNode;
 }
 
-function ContactRow({ label, href, icon, children }: ContactRowProps) {
+function ContactRow({ label, href, icon, download, children }: ContactRowProps) {
   return (
     <li className="border-rule border-b">
       <a
         href={href}
+        download={download}
         rel={href.startsWith("http") ? "me noopener" : undefined}
         className="group hover:bg-surface flex flex-wrap items-center gap-x-6 gap-y-2 py-5 transition-colors sm:flex-nowrap sm:px-2"
       >

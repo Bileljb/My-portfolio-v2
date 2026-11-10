@@ -12,16 +12,28 @@ const styles: Record<Variant, string> = {
 interface ButtonLinkProps {
   to: string;
   variant?: Variant;
+  /** Render a plain download link instead of a router link (for files under /public). */
+  download?: boolean;
   children: ReactNode;
 }
 
 /** Router link styled as a button. Use for in-app destinations (including /#anchors). */
-export default function ButtonLink({ to, variant = "primary", children }: ButtonLinkProps) {
+export default function ButtonLink({
+  to,
+  variant = "primary",
+  download = false,
+  children,
+}: ButtonLinkProps) {
+  const className = `inline-flex min-h-11 items-center gap-2 border-2 px-5 py-2.5 font-mono text-sm font-medium transition-[transform,box-shadow,background-color,color] motion-reduce:transition-none ${styles[variant]}`;
+  if (download) {
+    return (
+      <a href={to} download className={className}>
+        {children}
+      </a>
+    );
+  }
   return (
-    <Link
-      to={to}
-      className={`inline-flex min-h-11 items-center gap-2 border-2 px-5 py-2.5 font-mono text-sm font-medium transition-[transform,box-shadow,background-color,color] motion-reduce:transition-none ${styles[variant]}`}
-    >
+    <Link to={to} className={className}>
       {children}
     </Link>
   );

@@ -1,5 +1,6 @@
 import { Link } from "react-router";
 import { profile } from "../../data/profile.ts";
+import { assetUrl } from "../../lib/assetUrl.ts";
 import ThemeToggle from "./ThemeToggle.tsx";
 
 const nav = [
@@ -35,6 +36,17 @@ export default function Header() {
                 </Link>
               </li>
             ))}
+            {profile.links.cv && (
+              <li>
+                <a
+                  href={assetUrl(profile.links.cv)}
+                  download
+                  className="text-accent-text hover:text-fg px-2 py-2 font-mono text-xs tracking-wide uppercase transition-colors sm:px-3 sm:text-sm"
+                >
+                  CV
+                </a>
+              </li>
+            )}
           </ul>
           <ThemeToggle />
         </nav>
