@@ -119,7 +119,7 @@ export const projects: readonly Project[] = [
     title: "Loupe",
     tagline:
       "A free website health check that explains problems in plain language for small business owners.",
-    status: "in-progress",
+    status: "complete",
     featured: true,
     order: 2,
     summary:
@@ -218,7 +218,7 @@ export const projects: readonly Project[] = [
     title: "TamreenLab",
     tagline:
       "An Arabic-first Excel practice site where learners type real formulas into an in-browser spreadsheet.",
-    status: "in-progress",
+    status: "complete",
     featured: true,
     order: 3,
     summary:

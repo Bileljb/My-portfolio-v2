@@ -5,8 +5,8 @@
 ## Projects
 
 - [OnePlace](projects/oneplace): Skool-inspired multi-tenant SaaS where creators monetize paid private communities. Live demo: https://oneplace-c1b.pages.dev/communities
-- [Loupe](projects/loupe): In progress. Free website health check that explains SEO, speed and accessibility problems in plain language for small business owners, in English, French and Arabic. Live: https://loupe-ashen.vercel.app/en · Code: https://github.com/Bileljb/Loupe
-- [TamreenLab](projects/tamreenlab): In progress. Arabic-first Excel practice site where learners type real formulas into an in-browser spreadsheet, with instant feedback checked by a shared formula engine, in Arabic, English and French. Live: https://tamreen-lab.vercel.app/en · Code: https://github.com/Bileljb/TamreenLab
+- [Loupe](projects/loupe): Complete. Free website health check that explains SEO, speed and accessibility problems in plain language for small business owners, in English, French and Arabic. Live: https://loupe-ashen.vercel.app/en · Code: https://github.com/Bileljb/Loupe
+- [TamreenLab](projects/tamreenlab): Complete. Arabic-first Excel practice site where learners type real formulas into an in-browser spreadsheet, with instant feedback checked by a shared formula engine, in Arabic, English and French. Live: https://tamreen-lab.vercel.app/en · Code: https://github.com/Bileljb/TamreenLab
 
 ## Contact
 

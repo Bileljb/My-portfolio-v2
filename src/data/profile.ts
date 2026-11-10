@@ -19,10 +19,11 @@ export const profile: Profile = {
   links: {
     github: "https://github.com/Bileljb/",
     linkedin: "https://www.linkedin.com/in/bilel-jabrane-a9989b218/",
+    cv: "/Bilel_Jabrane_CV.pdf",
   },
   skills: [
-    { group: "Frontend", items: ["React", "Vite", "TypeScript", "Tailwind CSS"] },
+    { group: "Frontend", items: ["React", "Next.js", "Vite", "TypeScript", "Tailwind CSS"] },
     { group: "Backend", items: ["Node.js", "Express", "TypeScript", "JWT auth"] },
-    { group: "Database", items: ["PostgreSQL", "Prisma"] },
+    { group: "Database", items: ["PostgreSQL", "Prisma", "MongoDB"] },
   ],
 };
