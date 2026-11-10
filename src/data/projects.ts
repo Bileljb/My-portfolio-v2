@@ -213,4 +213,134 @@ export const projects: readonly Project[] = [
     ],
     links: { live: "https://loupe-ashen.vercel.app/en", repo: "https://github.com/Bileljb/Loupe" },
   },
+  {
+    slug: "tamreenlab",
+    title: "TamreenLab",
+    tagline:
+      "An Arabic-first Excel practice site where learners type real formulas into an in-browser spreadsheet.",
+    status: "in-progress",
+    featured: true,
+    order: 3,
+    summary:
+      "An interactive Excel course for Arabic speakers, also in English and French. Learners solve short steps in a spreadsheet in the browser, get instant feedback on each answer, and earn points the server checks.",
+    problem:
+      "Arabic speakers learning Excel, mostly students and junior office workers, have few places to practise by doing. Practice sites are English-first, aren’t built for right-to-left reading, and stumble on Arabic keyboard input such as Arabic digits and the “؛” separator. Video courses show formulas but never let the learner type one and see where it went wrong.",
+    solution:
+      "Each lesson is a series of short steps (select a range, enter a formula, answer a question, press a shortcut) played in a spreadsheet grid in the browser. A formula engine shared by the browser and the server checks every answer instantly, explains the specific mistake, and re-runs the formula on altered data to catch hard-coded results. The server re-checks each answer before awarding points, and missed steps come back on a spaced review schedule.",
+    role: "Solo, end to end: product plan, formula engine, spreadsheet grid UI, the Next.js site in three languages, Express API, PostgreSQL schema, 27 lessons, tests, CI, and a security, accessibility and load-testing pass.",
+    features: [
+      "Practise in a real spreadsheet grid: select cells and ranges by mouse or keyboard, with a name box and formula bar",
+      "27 lessons and 166 steps across 7 tracks, from basics to lookups and keyboard shortcuts",
+      "Specific feedback for each wrong answer: wrong cell, missing function, syntax error, #REF!, #NAME?, #N/A and more",
+      "Detects answers that type the result instead of calculating it",
+      "Arabic-first right-to-left interface with English and French versions; formulas always stay left to right",
+      "Accepts Arabic keyboard input: Arabic-Indic digits and “؛” or “،” as separators",
+      "“Explain my mistake”: a short AI explanation of a wrong formula that never gives away the answer",
+      "Keyboard shortcut drills for Windows and Mac that work on Arabic layouts, with a multiple-choice version on phones",
+      "Points, levels, a daily goal, streaks and a daily leaderboard",
+      "“Review mistakes” mode that brings missed steps back after 1, 3 and 7 days",
+      "Works without an account, merging browser progress into an account on sign-up",
+      "15 Excel function reference pages and shareable result cards",
+    ],
+    stack: [
+      {
+        group: "Frontend",
+        items: ["Next.js 16", "React 19", "TypeScript", "Tailwind CSS 4", "next-intl"],
+      },
+      {
+        group: "Backend",
+        items: ["Node.js", "Express 5", "Zod", "jose (JWT)", "argon2id", "pino", "Groq API"],
+      },
+      { group: "Database", items: ["PostgreSQL 17", "Prisma 7"] },
+      { group: "Infra", items: ["GitHub Actions", "Docker Compose"] },
+      {
+        group: "Tooling",
+        items: ["pnpm workspaces", "Turborepo", "Vitest", "Playwright", "axe-core", "Lighthouse"],
+      },
+    ],
+    cardStack: [
+      "Next.js",
+      "React",
+      "TypeScript",
+      "Express",
+      "PostgreSQL",
+      "Prisma",
+      "Tailwind CSS",
+      "Playwright",
+    ],
+    decisions: [
+      {
+        title: "Why I wrote my own formula engine",
+        why: "Answers are checked in the browser for instant feedback, again on the server for scoring, and re-run on altered data to catch hard-coded results. On the same 22 Excel cases, a small custom evaluator passed 22/22 against HyperFormula’s 20/22, at 12.5 KB minified against 793 KB, and without HyperFormula’s GPL-or-paid licence. The engine now covers 31 functions behind an adapter interface, with 435 unit tests.",
+      },
+      {
+        title: "How the server stays authoritative for points",
+        why: "The browser grades instantly, but the API never trusts it: the strict request schema has no “correct” field, and the server rebuilds the step from the database and re-runs the same engine. Points go into a ledger with a unique (user, reason) key, so a step can never be paid twice, even under concurrent requests. Progress merged from a guest’s browser is capped at 3,000 points.",
+      },
+      {
+        title: "How auth and the request edge are secured",
+        why: "Passwords use argon2id. Sessions pair a 15-minute JWT in an httpOnly cookie with rotating refresh tokens stored only as hashes, and reusing one revokes its whole family. A security pass found that the API trusted any client’s X-Forwarded-For, which bypassed per-IP rate limits, so production now refuses to start without an explicit proxy hop count. Cross-site writes are refused via Origin and Sec-Fetch-Site checks.",
+      },
+      {
+        title: "How the AI hint stays cheap, safe and optional",
+        why: "The hint only explains a formula the server has re-checked as wrong, and answers are cached by step, language and the formula’s canonical spelling. Calls are capped per learner, per guest IP, per day in tokens and per month in spend, with a 3.5 s timeout. Any failure, including a reply that contains the solution, falls back to the lesson’s static hint; p95 latency in a live trial was 974 ms.",
+      },
+      {
+        title: "How I tested performance, accessibility and recovery",
+        why: "A load test seeds 20,000 users and 400,000 rows and runs 32 concurrent clients; making the leaderboard index cover the summed column turned it into an index-only scan and raised throughput from 450 to 610 requests per second with no errors. axe-core checks WCAG 2.1 AA in both themes on desktop and mobile, and a restore drill verifies backups row by row. The suites total 766 unit, 72 Postgres integration and 96 Playwright end-to-end tests.",
+      },
+    ],
+    screenshots: [
+      {
+        src: "/projects/tamreenlab/home-ar.webp",
+        alt: "Arabic home page with the headline “Learn Excel by practice” and a small interactive sheet whose formula bar shows =SUM(B2:B4), with 27 lessons, 166 steps and 15 functions listed below",
+        width: 1600,
+        height: 1000,
+        caption: "Arabic-first home page with a sheet you can try",
+      },
+      {
+        src: "/projects/tamreenlab/lesson-player.webp",
+        alt: "Arabic lesson step with the formula =B2+B3+B4+B5+B6 in the formula bar, the total 420 in cell B7 and green feedback awarding 525 points",
+        width: 1600,
+        height: 1311,
+        caption: "Solving a step in the spreadsheet",
+      },
+      {
+        src: "/projects/tamreenlab/ai-explanation.webp",
+        alt: "Wrong formula =B2+B3+B4+B6 with red feedback, and below it an AI explanation in Arabic pointing out that cell B5 was left out, with Helpful and Not helpful buttons",
+        width: 1600,
+        height: 1635,
+        caption: "Explaining a wrong formula",
+      },
+      {
+        src: "/projects/tamreenlab/shortcut-drill.webp",
+        alt: "Shortcut step asking for the edit-cell shortcut, with a Windows and Mac switch and an F2 keycap captured as the answer",
+        width: 1600,
+        height: 1002,
+        caption: "Keyboard shortcut drills",
+      },
+      {
+        src: "/projects/tamreenlab/lesson-complete.webp",
+        alt: "Lesson completion card with three stars and tiles for 6 of 6 correct steps, 6 first-try answers and 3,150 points, with Next lesson and Share buttons",
+        width: 1600,
+        height: 704,
+        caption: "Finishing a lesson",
+      },
+      {
+        src: "/projects/tamreenlab/lesson-en.webp",
+        alt: "English SUMIF lesson laid out left to right, with an explanation of the function above the first practice step",
+        width: 1600,
+        height: 1000,
+        caption: "Also in English and French",
+      },
+      {
+        src: "/projects/tamreenlab/function-vlookup.webp",
+        alt: "Arabic VLOOKUP reference page with a description, the syntax in a copyable code block and numbered argument cards",
+        width: 1600,
+        height: 1000,
+        caption: "Function reference pages",
+      },
+    ],
+    links: { repo: "https://github.com/Bileljb/TamreenLab" },
+  },
 ];
