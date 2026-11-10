@@ -341,6 +341,9 @@ export const projects: readonly Project[] = [
         caption: "Function reference pages",
       },
     ],
-    links: { repo: "https://github.com/Bileljb/TamreenLab" },
+    links: {
+      live: "https://tamreen-lab.vercel.app/en",
+      repo: "https://github.com/Bileljb/TamreenLab",
+    },
   },
 ];
