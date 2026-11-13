@@ -342,4 +342,143 @@ export const projects: readonly Project[] = [
       repo: "https://github.com/Bileljb/TamreenLab",
     },
   },
+  {
+    slug: "rackmind",
+    title: "RackMind",
+    tagline:
+      "Server monitoring for small ops teams that turns abnormal readings into one incident per server, with an AI-suggested cause and next steps.",
+    status: "complete",
+    featured: true,
+    order: 4,
+    summary:
+      "RackMind watches servers and notices when one starts overheating, filling up or goes silent. It opens a single incident, asks an AI model for the likely cause and what to check next, and lets the team acknowledge, assign and resolve it together. The AI only suggests; people make every decision.",
+    problem:
+      "When a server misbehaves, the on-call engineer usually gets a threshold alert from a tool like Nagios or Zabbix: it says that something crossed a line, not why. One fault often fires a string of near-identical alerts, and working out the cause means comparing charts across the server, its rack neighbours and past incidents by hand. Tools that explain the cause exist, but they’re paid products like Datadog, which is too expensive for a small team or a homelab.",
+    solution:
+      "Every 5 seconds, each server sends its readings to the API, which saves them and hands the checking to a background worker so nothing waits. The worker compares the last 30 seconds with fixed safety limits and with that server’s own normal from a few minutes earlier. If something is wrong, it opens one incident, and the database refuses a second one for the same server. The worker then boils about 1,800 raw readings, the rack neighbours and similar past incidents down to a short summary, asks an AI model for the likely cause, and checks the answer before anyone sees it. Every change appears live in open browsers.",
+    role: "Solo project. I designed and built all of it (FastAPI backend, worker and detector, AI integration, Next.js dashboard, Linux agent, simulator, CI and deployment), using Claude Code as a pair programmer.",
+    features: [
+      "Monitor real Linux servers with a one-file Python agent that sends CPU usage, memory, disk, network and (when there’s a sensor) temperature every 5 seconds",
+      "Switch to Simulation mode to explore a simulated data center of 4 racks × 5 servers, which replays a scripted scenario whose first incident opens in about a minute",
+      "See every server at a glance on a rack grid coloured by temperature (or CPU usage), refreshed every 5 seconds",
+      "Open any server to get one chart per metric, with a time range of up to 24 hours",
+      "Get exactly one incident per misbehaving server, opened automatically when a reading crosses a safety limit or rises far above that server’s own recent normal",
+      "Get a critical “not reporting” incident when a real server goes 60 seconds without sending",
+      "Take incidents from open to acknowledged to resolved, with assignment, comments, a full audit history and a “back to normal” hint. Nothing closes on its own",
+      "Read an AI diagnosis on each new incident (probable cause, confidence, up to 5 recommended steps and the evidence for them), then rate it or ask again",
+      "Watch new incidents, status changes and diagnoses appear in every open browser without refreshing, with a “New incident” toast",
+      "Sign in as an operator, engineer or admin, each with its own permissions; admins create users, change roles and deactivate accounts",
+      "Inject 4 kinds of fault on a schedule (CPU spike, overheating rack, filling disk, memory leak) to demo the whole pipeline end to end",
+    ],
+    stack: [
+      {
+        group: "Frontend",
+        items: [
+          "Next.js 16 (App Router)",
+          "React 19",
+          "TypeScript 5",
+          "Tailwind CSS 4",
+          "SWR 2",
+          "Recharts 3",
+        ],
+      },
+      {
+        group: "Backend",
+        items: [
+          "Python 3.12",
+          "FastAPI (async)",
+          "Pydantic 2",
+          "ARQ (Redis job queue)",
+          "Server-Sent Events",
+          "PyJWT + Argon2",
+          "Groq API (gpt-oss-120b, structured outputs)",
+        ],
+      },
+      {
+        group: "Database",
+        items: ["PostgreSQL 17", "SQLAlchemy 2 (async)", "Alembic", "Redis (queue + pub/sub)"],
+      },
+      {
+        group: "Infra",
+        items: ["Docker Compose", "Caddy", "Vercel", "Render", "Neon", "GitHub Actions"],
+      },
+      {
+        group: "Tooling",
+        items: ["pytest + httpx", "ruff", "mypy (strict)", "ESLint 9", "Prettier 3", "Claude Code"],
+      },
+    ],
+    cardStack: [
+      "Next.js",
+      "TypeScript",
+      "Tailwind CSS",
+      "FastAPI",
+      "Python",
+      "PostgreSQL",
+      "Redis",
+      "Docker",
+    ],
+    decisions: [
+      {
+        title: "Why simple rules instead of machine learning",
+        why: "A trained model would need labelled history I didn’t have, and its alerts would be hard to explain. Instead, two simple rules decide: fixed safety limits (CPU usage at 98% or more is critical), and a check of whether the last 30 seconds are far above that same server’s normal. “Normal” is taken from 30 to 5 minutes earlier, so a slow rise can’t quietly become its own baseline. Only rises count, so a recovering server never raises an alert, and every alert reads like “CPU usage: 99.0 is above the critical limit 98”. The trade-off: a problem that lasts long enough slowly starts to look normal.",
+      },
+      {
+        title: "How I stopped duplicate incidents",
+        why: "If two checks run at the same moment, both can see no open incident and both create one. So the database enforces the rule itself: it allows only one active incident per server, and when a second check tries to open one, its findings are added to the existing incident instead. New findings can raise an incident’s severity but never lower it. The trade-off: a fault that hits a whole rack still opens one incident per server (five for an overheating rack), because nothing groups them yet.",
+      },
+      {
+        title: "How I kept the AI from showing nonsense or acting on its own",
+        why: "The AI must answer in a fixed format, and the backend checks every answer again before saving it. Tests feed it 7 kinds of bad answer, such as broken JSON, a confidence above 100% or a metric that doesn’t exist; each is saved as a failure and never shown. If the AI is slow or unavailable, the incident works the same and an engineer can ask again. The AI can’t touch any server, risky steps are marked “Needs approval”, and incident titles and comments are treated as data, not instructions, so a comment can’t take over the prompt. On the live demo, a full diagnosis took under 3 seconds. The trade-off: few models support this strict format, so the model is a setting.",
+      },
+      {
+        title: "Why Server-Sent Events instead of WebSockets",
+        why: "Live updates only go one way, from server to browser, so I didn’t need the two-way channel WebSockets give. Server-Sent Events work over plain HTTP, send the login cookie automatically and reconnect on their own. Each browser tab keeps one connection open and reloads only the incident that changed. Because a connection can stay open for hours, it checks the login once and then hands its database connection back. The cost is one open connection per tab.",
+      },
+      {
+        title: "How I fit the backend into a free host",
+        why: "Render’s free plan runs web servers but not background workers, and RackMind needs three processes: the API, the worker and the simulator. So one container runs all three, restarting the worker or simulator within 5 seconds if either crashes. The database is on Neon and the dashboard on Vercel, which forwards API calls so the browser only ever talks to one address. Redis is set never to drop data, so queued jobs aren’t lost. The trade-off: after 15 minutes without visitors the backend sleeps, and the first visit waits about a minute. The self-hosted Docker setup doesn’t have that problem.",
+      },
+    ],
+    screenshots: [
+      {
+        src: "/projects/rackmind/rack-grid.webp",
+        alt: "Four racks of five servers each, every server listed with its CPU temperature; three servers in rack R04 are tinted amber with warning icons at about 61 °C, and a “New incident: High disk usage on r01-srv03” notification sits in the bottom corner",
+        width: 1600,
+        height: 1000,
+        caption: "Rack R04 overheating in Simulation mode, while a new incident arrives live",
+      },
+      {
+        src: "/projects/rackmind/incident-diagnosis.webp",
+        alt: "Critical incident “High CPU usage on r02-srv03” with an AI diagnosis: a runaway process as the probable cause at 68% confidence, five next steps with two marked “Needs approval”, and evidence showing CPU usage rising from a 30.8% baseline to 99% while rack neighbours stayed between 17.6% and 25.2%",
+        width: 1600,
+        height: 1369,
+        caption: "AI diagnosis with its evidence; risky steps need approval",
+      },
+      {
+        src: "/projects/rackmind/incidents.webp",
+        alt: "List of eight open incidents: five warnings for high CPU temperature on r04-srv01 to r04-srv05, one each for high memory on r03-srv02 and high disk on r01-srv03, and a critical CPU usage incident on r02-srv03 marked “Back to normal”",
+        width: 1600,
+        height: 1000,
+        caption: "Eight incidents opened automatically, one per affected server",
+      },
+      {
+        src: "/projects/rackmind/server-detail.webp",
+        alt: "Six line charts for server r02-srv03 over the last hour (CPU temperature, power draw, CPU usage, memory, disk and network), with CPU usage jumping to 100% between 08:40 and 08:43 and temperature rising with it",
+        width: 1600,
+        height: 1050,
+        caption: "One chart per metric, from 15 minutes up to 24 hours",
+      },
+      {
+        src: "/projects/rackmind/user-admin.webp",
+        alt: "Admin user table with five accounts, each with a role dropdown (operator, engineer or admin) and a deactivate button, above a form to create a user with a temporary password",
+        width: 1600,
+        height: 1000,
+        caption: "Three roles, enforced by the API on every endpoint",
+      },
+    ],
+    links: {
+      live: "https://rack-mind.vercel.app",
+      repo: "https://github.com/Bileljb/RackMind",
+    },
+  },
 ];
