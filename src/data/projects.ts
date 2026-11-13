@@ -351,7 +351,7 @@ export const projects: readonly Project[] = [
     featured: true,
     order: 4,
     summary:
-      "RackMind watches servers and notices when one starts overheating, filling up or goes silent. It opens a single incident, asks an AI model for the likely cause and what to check next, and lets the team acknowledge, assign and resolve it together. The AI only suggests; people make every decision.",
+      "RackMind watches servers and notices when one starts overheating, filling up or goes silent. It opens a single incident, asks an AI model for the likely cause and what to check next, and lets the team acknowledge, assign and resolve it together. The AI only suggests; people make every decision. To try the live demo, sign in as engineer.test@rackmind.local or operator.test@rackmind.local (password “To12345678”).",
     problem:
       "When a server misbehaves, the on-call engineer usually gets a threshold alert from a tool like Nagios or Zabbix: it says that something crossed a line, not why. One fault often fires a string of near-identical alerts, and working out the cause means comparing charts across the server, its rack neighbours and past incidents by hand. Tools that explain the cause exist, but they’re paid products like Datadog, which is too expensive for a small team or a homelab.",
     solution:
