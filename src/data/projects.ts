@@ -267,23 +267,23 @@ export const projects: readonly Project[] = [
     decisions: [
       {
         title: "Why I wrote my own formula engine",
-        why: "Every answer is checked three times: in the browser for instant feedback, on the server before points are given, and again on changed data to catch learners who type the result instead of a formula. I compared a small engine of my own with HyperFormula, the popular open-source option. Mine passed all 22 of my Excel test cases (HyperFormula passed 20), is about 60 times smaller, and avoids HyperFormula’s GPL-or-paid licence. It now supports 31 functions and has 435 tests.",
+        why: "Every answer is checked in the browser for instant feedback, then again on the server before points are given. I compared my own small engine with HyperFormula, the popular open-source option: mine passed all 22 of my Excel test cases (HyperFormula passed 20) and is about 60 times smaller.",
       },
       {
         title: "Why the server decides the points",
-        why: "The browser shows feedback instantly, but it never decides the score. The server loads the step from the database and checks the answer again with the same engine. Each award is saved with a unique key, so the same step can’t pay out twice, even if the request arrives twice at the same moment. Guest progress merged into a new account is capped at 3,000 points.",
+        why: "The browser shows feedback instantly, but the server checks every answer again before giving points. Each award is saved once, so the same step can never pay out twice, even if the request arrives twice at the same moment.",
       },
       {
         title: "How accounts stay secure",
-        why: "Passwords are hashed with argon2id, and logins use a short-lived token in an httpOnly cookie that JavaScript can’t read. Refresh tokens change on every use and are stored only as hashes; if an old one is reused, every session from that login is signed out. During a security review I found that anyone could fake their IP address to get around the rate limits, so the server now refuses to start in production until it’s told how many proxies sit in front of it.",
+        why: "Passwords are hashed with argon2id, and logins live in an httpOnly cookie that JavaScript can’t read. During a security review I found that anyone could fake their IP address to get around the rate limits, and fixed it.",
       },
       {
         title: "How the AI hint stays cheap and safe",
-        why: "The AI only explains a formula the server has already confirmed is wrong, and an explanation is saved and reused when someone makes the same mistake. Usage is limited per learner, per guest and per day, with a monthly spending cap. If the AI is slow, unavailable, or its reply gives away the answer, the learner sees the lesson’s written hint instead. In a live trial, 95% of explanations arrived in under a second.",
+        why: "The AI only explains formulas the server has confirmed are wrong, and reuses explanations for repeated mistakes. Usage is capped per learner and per month, and if the AI fails or gives away the answer, the learner sees the lesson’s written hint instead.",
       },
       {
         title: "How I tested speed, accessibility and backups",
-        why: "A load test filled the database with 20,000 users and 400,000 rows, then sent requests from 32 clients at once. Changing one database index made the leaderboard faster and raised throughput from 450 to 610 requests per second, with no errors. Accessibility checks run on desktop and mobile in light and dark mode, and I practised restoring a backup to confirm nothing was lost. In total the project has 934 automated tests.",
+        why: "A load test with 20,000 users and 400,000 rows showed one slow leaderboard query; fixing its index raised throughput from 450 to 610 requests per second. Accessibility, backups and the rest are covered by 934 automated tests.",
       },
     ],
     screenshots: [
@@ -420,23 +420,23 @@ export const projects: readonly Project[] = [
     decisions: [
       {
         title: "Why simple rules instead of machine learning",
-        why: "A trained model would need labelled history I didn’t have, and its alerts would be hard to explain. Instead, two simple rules decide: fixed safety limits (CPU usage at 98% or more is critical), and a check of whether the last 30 seconds are far above that same server’s normal. “Normal” is taken from 30 to 5 minutes earlier, so a slow rise can’t quietly become its own baseline. Only rises count, so a recovering server never raises an alert, and every alert reads like “CPU usage: 99.0 is above the critical limit 98”. The trade-off: a problem that lasts long enough slowly starts to look normal.",
+        why: "A trained model would need history I didn’t have, and its alerts would be hard to explain. Instead, an alert fires when a reading crosses a fixed safety limit or rises far above that server’s own recent normal, and every alert says why in one line.",
       },
       {
         title: "How I stopped duplicate incidents",
-        why: "If two checks run at the same moment, both can see no open incident and both create one. So the database enforces the rule itself: it allows only one active incident per server, and when a second check tries to open one, its findings are added to the existing incident instead. New findings can raise an incident’s severity but never lower it. The trade-off: a fault that hits a whole rack still opens one incident per server (five for an overheating rack), because nothing groups them yet.",
+        why: "Two checks running at the same moment could both open an incident for the same server. So the database itself allows only one active incident per server, and any later findings are added to it instead.",
       },
       {
         title: "How I kept the AI from showing nonsense or acting on its own",
-        why: "The AI must answer in a fixed format, and the backend checks every answer again before saving it. Tests feed it 7 kinds of bad answer, such as broken JSON, a confidence above 100% or a metric that doesn’t exist; each is saved as a failure and never shown. If the AI is slow or unavailable, the incident works the same and an engineer can ask again. The AI can’t touch any server, risky steps are marked “Needs approval”, and incident titles and comments are treated as data, not instructions, so a comment can’t take over the prompt. On the live demo, a full diagnosis took under 3 seconds. The trade-off: few models support this strict format, so the model is a setting.",
+        why: "The AI must answer in a fixed format, and every answer is checked before it’s saved; tests feed it 7 kinds of bad answer to prove none get shown. The AI can’t touch any server, and risky steps are marked “Needs approval”.",
       },
       {
         title: "Why Server-Sent Events instead of WebSockets",
-        why: "Live updates only go one way, from server to browser, so I didn’t need the two-way channel WebSockets give. Server-Sent Events work over plain HTTP, send the login cookie automatically and reconnect on their own. Each browser tab keeps one connection open and reloads only the incident that changed. Because a connection can stay open for hours, it checks the login once and then hands its database connection back. The cost is one open connection per tab.",
+        why: "Live updates only go one way, from server to browser, so I didn’t need WebSockets’ two-way channel. Server-Sent Events work over plain HTTP, send the login cookie automatically and reconnect on their own.",
       },
       {
         title: "How I fit the backend into a free host",
-        why: "Render’s free plan runs web servers but not background workers, and RackMind needs three processes: the API, the worker and the simulator. So one container runs all three, restarting the worker or simulator within 5 seconds if either crashes. The database is on Neon and the dashboard on Vercel, which forwards API calls so the browser only ever talks to one address. Redis is set never to drop data, so queued jobs aren’t lost. The trade-off: after 15 minutes without visitors the backend sleeps, and the first visit waits about a minute. The self-hosted Docker setup doesn’t have that problem.",
+        why: "Render’s free plan doesn’t run background workers, so one container runs the API, the worker and the simulator together, restarting any that crash. The trade-off: after 15 minutes without visitors the backend sleeps, and the first visit waits about a minute.",
       },
     ],
     screenshots: [
