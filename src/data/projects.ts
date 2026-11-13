@@ -267,23 +267,23 @@ export const projects: readonly Project[] = [
     decisions: [
       {
         title: "Why I wrote my own formula engine",
-        why: "Answers are checked in the browser for instant feedback, again on the server for scoring, and re-run on altered data to catch hard-coded results. On the same 22 Excel cases, a small custom evaluator passed 22/22 against HyperFormula’s 20/22, at 12.5 KB minified against 793 KB, and without HyperFormula’s GPL-or-paid licence. The engine now covers 31 functions behind an adapter interface, with 435 unit tests.",
+        why: "Every answer is checked three times: in the browser for instant feedback, on the server before points are given, and again on changed data to catch learners who type the result instead of a formula. I compared a small engine of my own with HyperFormula, the popular open-source option. Mine passed all 22 of my Excel test cases (HyperFormula passed 20), is about 60 times smaller, and avoids HyperFormula’s GPL-or-paid licence. It now supports 31 functions and has 435 tests.",
       },
       {
-        title: "How the server stays authoritative for points",
-        why: "The browser grades instantly, but the API never trusts it: the strict request schema has no “correct” field, and the server rebuilds the step from the database and re-runs the same engine. Points go into a ledger with a unique (user, reason) key, so a step can never be paid twice, even under concurrent requests. Progress merged from a guest’s browser is capped at 3,000 points.",
+        title: "Why the server decides the points",
+        why: "The browser shows feedback instantly, but it never decides the score. The server loads the step from the database and checks the answer again with the same engine. Each award is saved with a unique key, so the same step can’t pay out twice, even if the request arrives twice at the same moment. Guest progress merged into a new account is capped at 3,000 points.",
       },
       {
-        title: "How auth and the request edge are secured",
-        why: "Passwords use argon2id. Sessions pair a 15-minute JWT in an httpOnly cookie with rotating refresh tokens stored only as hashes, and reusing one revokes its whole family. A security pass found that the API trusted any client’s X-Forwarded-For, which bypassed per-IP rate limits, so production now refuses to start without an explicit proxy hop count. Cross-site writes are refused via Origin and Sec-Fetch-Site checks.",
+        title: "How accounts stay secure",
+        why: "Passwords are hashed with argon2id, and logins use a short-lived token in an httpOnly cookie that JavaScript can’t read. Refresh tokens change on every use and are stored only as hashes; if an old one is reused, every session from that login is signed out. During a security review I found that anyone could fake their IP address to get around the rate limits, so the server now refuses to start in production until it’s told how many proxies sit in front of it.",
       },
       {
-        title: "How the AI hint stays cheap, safe and optional",
-        why: "The hint only explains a formula the server has re-checked as wrong, and answers are cached by step, language and the formula’s canonical spelling. Calls are capped per learner, per guest IP, per day in tokens and per month in spend, with a 3.5 s timeout. Any failure, including a reply that contains the solution, falls back to the lesson’s static hint; p95 latency in a live trial was 974 ms.",
+        title: "How the AI hint stays cheap and safe",
+        why: "The AI only explains a formula the server has already confirmed is wrong, and an explanation is saved and reused when someone makes the same mistake. Usage is limited per learner, per guest and per day, with a monthly spending cap. If the AI is slow, unavailable, or its reply gives away the answer, the learner sees the lesson’s written hint instead. In a live trial, 95% of explanations arrived in under a second.",
       },
       {
-        title: "How I tested performance, accessibility and recovery",
-        why: "A load test seeds 20,000 users and 400,000 rows and runs 32 concurrent clients; making the leaderboard index cover the summed column turned it into an index-only scan and raised throughput from 450 to 610 requests per second with no errors. axe-core checks WCAG 2.1 AA in both themes on desktop and mobile, and a restore drill verifies backups row by row. The suites total 766 unit, 72 Postgres integration and 96 Playwright end-to-end tests.",
+        title: "How I tested speed, accessibility and backups",
+        why: "A load test filled the database with 20,000 users and 400,000 rows, then sent requests from 32 clients at once. Changing one database index made the leaderboard faster and raised throughput from 450 to 610 requests per second, with no errors. Accessibility checks run on desktop and mobile in light and dark mode, and I practised restoring a backup to confirm nothing was lost. In total the project has 934 automated tests.",
       },
     ],
     screenshots: [
