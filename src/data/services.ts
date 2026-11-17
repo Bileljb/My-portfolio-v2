@@ -3,21 +3,25 @@ import type { Text } from "./types.ts";
 
 /**
  * All copy for the /services page (written for business owners, not recruiters).
- * Edit text, prices and delivery times here; the page renders from this file.
- * Unknown facts use todo("…"): a visible badge in dev, hidden in production.
+ * Edit text and delivery times here; the page renders from this file.
+ * Keep it short: one idea per line. Unknown facts use todo("…"): a visible badge
+ * in dev, hidden in production.
  */
+
+export type ServiceIcon = "wrench" | "page" | "speed" | "globe" | "puzzle";
 
 export interface Service {
   id: string;
+  icon: ServiceIcon;
+  /** Short name shown above the title, e.g. "Quick fix". */
+  name: string;
   /** Outcome-focused, in the reader's words. */
   title: string;
+  /** One short line: who it's for. */
   forWho: string;
+  /** 3 short points, a few words each. */
   includes: readonly string[];
   delivery: string;
-  /** Number only; shown as "from $X". */
-  priceFrom: number;
-  /** Show "Custom quote" next to the price. */
-  quote?: boolean;
   cta: string;
 }
 
@@ -28,7 +32,7 @@ export interface Shot {
   height: number;
 }
 
-/** The same page captured at laptop (1440 px), tablet (820 px) and phone (390 px) width. */
+/** One picture each for a laptop, a tablet and a phone frame. */
 export interface DeviceShots {
   laptop: Shot;
   tablet: Shot;
@@ -43,15 +47,16 @@ export interface ShowcaseProject {
   name: string;
   /** Honest credit line, e.g. "Built with a partner". */
   credit: string;
-  problem: Text;
-  built: Text;
+  /** One sentence: what it is and what it does. */
+  summary: Text;
+  /** One sentence: what this means for the reader's business. */
   forYou: Text;
   shots: DeviceShots;
 }
 
-export const services = {
-  currency: "$",
+const shot = (src: string, width: number, height: number): Shot => ({ src, width, height });
 
+export const services = {
   meta: {
     title: "Websites for small businesses · Bilel Jabrane",
     description:
@@ -59,109 +64,107 @@ export const services = {
   },
 
   hero: {
-    eyebrow: "Web design and development for small businesses",
+    eyebrow: "Websites for small businesses",
     headline:
       "I build fast, modern websites for small businesses, and I’ll show you for free what’s wrong with yours.",
-    sub: "Send me your website link. Within a day or two you’ll get a short, plain-language list of what’s slowing it down or keeping customers away, and what to fix first. No cost, no obligation.",
+    sub: "Send me your link. I’ll show you what’s costing you customers, in plain words.",
+    trust: ["Free site check", "A clear quote before I start", "Half upfront, half when done"],
     primaryCta: "Get a free site check",
-    secondaryCta: "See what I offer",
+    secondaryCta: "See services",
+    shots: {
+      laptop: shot("/projects/loupe/device-laptop.webp", 1440, 900),
+      tablet: shot("/projects/oneplace/device-tablet.webp", 600, 863),
+      phone: shot("/projects/tamreenlab/device-phone.webp", 390, 844),
+      alt: "Three websites I built: a website report on a laptop, a community feed on a tablet and an Arabic learning site on a phone",
+    },
   },
 
   servicesSection: {
     label: "Services",
     title: "Pick what your business needs",
-    intro:
-      "Clear prices, clear delivery times. Every price is a starting point: I confirm the exact amount in writing before any work starts.",
+    intro: "Tell me what you need. You get a clear quote before any work starts.",
     deliveryLabel: "Ready in",
-    priceLabel: "Price",
-    quoteLabel: "Custom quote",
-    fromLabel: "from",
     items: [
       {
         id: "quick-fix",
-        title: "Get your broken website working again",
-        forWho:
-          "For you if a page looks wrong on phones, a contact form stopped sending, or your site won’t go online.",
+        icon: "wrench",
+        name: "Quick fix",
+        title: "Your broken website, working again",
+        forWho: "A broken page, form or launch problem.",
         includes: [
-          "I find what’s broken and fix it",
-          "I check it on phone, tablet and computer",
-          "A short note explaining what went wrong",
+          "Problem found and fixed",
+          "Checked on phone and computer",
+          "A short note on the fix",
         ],
-        delivery: "1 to 2 days",
-        priceFrom: 20,
+        delivery: "1–2 days",
         cta: "Fix my website",
       },
       {
         id: "landing-page",
-        title: "A one-page website that turns visitors into customers",
-        forWho:
-          "For you if you have no website yet, or you need one page for a product, a service or a promotion.",
+        icon: "page",
+        name: "One-page website",
+        title: "A website that turns visitors into customers",
+        forWho: "For a new business, product or offer.",
         includes: [
-          "A clean design that looks good on every phone",
-          "Your offer, photos and prices, written clearly",
-          "Buttons to call you, message you or book",
-          "Set up so Google can find it",
+          "Looks great on every phone",
+          "Call, message or book buttons",
+          "Ready for Google",
         ],
-        delivery: "3 to 5 days",
-        priceFrom: 80,
+        delivery: "3–5 days",
         cta: "Start my website",
       },
       {
         id: "speed-seo",
-        title: "A faster website that more people find on Google",
-        forWho:
-          "For you if your site feels slow, or customers can’t find you when they search for what you sell.",
+        icon: "speed",
+        name: "Speed and Google",
+        title: "Faster pages, easier to find on Google",
+        forWho: "Based on your free site check.",
         includes: [
-          "Starts with the free site check, so you know what you’re paying for",
-          "Pages that load faster, especially on phones",
-          "Clear page titles and descriptions for Google search results",
-          "A before-and-after check so you can see what changed",
+          "Faster loading on phones",
+          "Better Google search results",
+          "Before-and-after check",
         ],
-        delivery: "2 to 4 days",
-        priceFrom: 50,
+        delivery: "2–4 days",
         cta: "Speed up my website",
       },
       {
         id: "launch",
-        title: "Your website online, safe and at your own address",
-        forWho:
-          "For you if your website is ready but not online yet, or you want your own address like yourbusiness.com.",
+        icon: "globe",
+        name: "Setup and launch",
+        title: "Online, safe and at your own address",
+        forWho: "Your website is ready, but not online yet.",
         includes: [
-          "Help choosing and connecting your web address (domain)",
-          "The padlock in the browser bar (SSL), so visitors know your site is safe",
-          "Hosting set up: the service that keeps your site online",
-          "A quick guide so you stay in control of your accounts",
+          "Your own address (domain)",
+          "The browser padlock (SSL)",
+          "Hosting that keeps you online",
         ],
-        delivery: "1 to 2 days",
-        priceFrom: 30,
+        delivery: "1–2 days",
         cta: "Put my website online",
       },
       {
         id: "custom",
-        title: "A custom tool built around how your business works",
-        forWho:
-          "For you if you need something a template can’t do: online booking, a customer area, an order form or a small internal tool.",
-        includes: [
-          "We talk first, so I understand how you work today",
-          "A clear plan and a fixed quote before I start",
-          "Regular updates you can try as it takes shape",
-        ],
-        delivery: "Depends on the project, agreed in the quote",
-        priceFrom: 150,
-        quote: true,
+        icon: "puzzle",
+        name: "Custom feature",
+        title: "A tool built around how you work",
+        forWho: "Online booking, a customer area, an order form…",
+        includes: ["We talk first", "Fixed quote before I start", "Updates as it takes shape"],
+        delivery: "Agreed in the quote",
         cta: "Tell me what you need",
       },
     ] satisfies Service[],
+    /** Highlighted box after the cards, for visitors who aren't sure yet. */
+    unsure: {
+      title: "Not sure what you need?",
+      body: "Start with a free site check. I’ll tell you what to fix first.",
+      cta: "Get a free site check",
+    },
   },
 
   projectsSection: {
-    label: "Projects I’ve built",
-    title: "A few things I’ve built",
-    intro:
-      "These are my own projects, not client work. They show the kind of quality you can expect for your business.",
-    problemLabel: "The problem",
-    builtLabel: "What I built",
-    forYouLabel: "What it means for you",
+    label: "My work",
+    title: "Projects I’ve built",
+    intro: "My own projects, not client work. The same care goes into yours.",
+    forYouLabel: "For your business",
     linkLabel: "Technical details",
     liveLabel: "Visit the site",
     items: [
@@ -169,33 +172,27 @@ export const services = {
         slug: "oneplace",
         name: "OnePlace",
         credit: "Built with a partner",
-        problem:
-          "People who sell courses or paid memberships often juggle one tool for payments, another for lessons and another for their community.",
-        built:
-          "One website where members pay, get access straight away, take courses, join events and talk to each other. The owner sees members and earnings on one screen.",
-        forYou:
-          "If you sell memberships, classes or courses, your customers can pay and start in one place, and you stop copying data between apps.",
+        summary:
+          "A membership platform where people pay, join, take courses and talk to each other, all in one place.",
+        forYou: "Sell memberships or classes without juggling five different apps.",
         shots: {
-          laptop: { src: "/projects/oneplace/device-laptop.webp", width: 1440, height: 900 },
-          tablet: { src: "/projects/oneplace/device-tablet.webp", width: 600, height: 863 },
-          phone: { src: "/projects/oneplace/device-phone.webp", width: 390, height: 844 },
-          alt: "OnePlace page for an English-learning community with a welcome video, a $20 a month membership and a Join button, shown on a laptop, a tablet and a phone",
+          laptop: shot("/projects/oneplace/community-feed.webp", 1498, 817),
+          tablet: shot("/projects/oneplace/device-tablet.webp", 600, 863),
+          phone: shot("/projects/oneplace/device-phone.webp", 390, 844),
+          alt: "OnePlace community feed with member posts, a members count and a points leaderboard, shown on a laptop, a tablet and a phone",
         },
       },
       {
         slug: "loupe",
         name: "Loupe",
         credit: "Built on my own",
-        problem:
-          "Most website check-up tools are written for developers, so business owners can’t tell which problems actually matter.",
-        built:
-          "A free tool that checks a website and gives it a grade, then explains each problem in plain English, French or Arabic, with the three fixes to do first.",
-        forYou:
-          "This is how I look at websites: what costs you customers, explained without jargon. Your free site check builds on the same approach.",
+        summary:
+          "A free tool that grades any website and explains each problem in plain English, French or Arabic.",
+        forYou: "The same eye I’ll bring to your free site check, without the jargon.",
         shots: {
-          laptop: { src: "/projects/loupe/device-laptop.webp", width: 1440, height: 900 },
-          tablet: { src: "/projects/loupe/device-tablet.webp", width: 600, height: 863 },
-          phone: { src: "/projects/loupe/device-phone.webp", width: 390, height: 844 },
+          laptop: shot("/projects/loupe/device-laptop.webp", 1440, 900),
+          tablet: shot("/projects/loupe/device-tablet.webp", 600, 863),
+          phone: shot("/projects/loupe/device-phone.webp", 390, 844),
           alt: "Loupe example report for a bakery website with a B grade and an overall score of 86 out of 100, shown on a laptop, a tablet and a phone",
         },
       },
@@ -203,16 +200,13 @@ export const services = {
         slug: "tamreenlab",
         name: "TamreenLab",
         credit: "Built on my own",
-        problem:
-          "Arabic speakers who want to learn Excel find few places to practise, and most of them are English-only.",
-        built:
-          "A practice website in Arabic, English and French. Learners type real formulas, get instant feedback on each mistake and earn points as they go.",
-        forYou:
-          "If your customers speak Arabic, French or English, your website can welcome each of them in their own language, with right-to-left Arabic done properly.",
+        summary:
+          "An Excel practice site in Arabic, English and French, with instant feedback on every answer.",
+        forYou: "Welcome every customer in their own language, Arabic included.",
         shots: {
-          laptop: { src: "/projects/tamreenlab/device-laptop.webp", width: 1440, height: 900 },
-          tablet: { src: "/projects/tamreenlab/device-tablet.webp", width: 600, height: 863 },
-          phone: { src: "/projects/tamreenlab/device-phone.webp", width: 390, height: 844 },
+          laptop: shot("/projects/tamreenlab/device-laptop.webp", 1440, 900),
+          tablet: shot("/projects/tamreenlab/device-tablet.webp", 600, 863),
+          phone: shot("/projects/tamreenlab/device-phone.webp", 390, 844),
           alt: "TamreenLab Arabic home page titled “Learn Excel by practice”, with a small practice spreadsheet adding up a column, shown on a laptop, a tablet and a phone",
         },
       },
@@ -221,35 +215,26 @@ export const services = {
 
   howItWorks: {
     label: "How it works",
-    title: "Simple from first message to launch",
+    title: "Three simple steps",
     steps: [
-      {
-        title: "You message me",
-        body: "Tell me about your business and what you need, in a few lines. A link to your current website helps if you have one.",
-      },
-      {
-        title: "I send you a clear quote",
-        body: "You get the price, what’s included and the delivery date in writing. To start, you pay a 50% deposit.",
-      },
-      {
-        title: "I deliver, then you pay the rest",
-        body: "You review the finished work and ask for changes. Once you’re happy, you pay the remaining 50% and it’s all yours.",
-      },
+      { title: "Message me", body: "Tell me what you need. A link helps." },
+      { title: "Get a clear quote", body: "Price and date in writing. Pay 50% to start." },
+      { title: "Get your website", body: "Ask for changes, then pay the rest." },
     ],
   },
 
   faq: {
     label: "Questions",
-    title: "Common questions",
+    title: "Good to know",
     items: [
       {
         q: "Do I pay everything upfront?",
-        a: "No. You pay 50% to start and the other 50% when the work is done and you’re happy with it.",
+        a: "No. 50% to start, 50% when you’re happy with the result.",
       },
       {
         q: "What if I want changes?",
         // Placeholder policy: change the number of rounds if you prefer.
-        a: "Two rounds of changes are included in every price. Anything new beyond the original plan gets a separate quote first, so there are no surprises.",
+        a: "Two rounds of changes are included. Anything new gets its own quote first.",
       },
       {
         q: "How can I pay?",
@@ -257,7 +242,7 @@ export const services = {
       },
       {
         q: "How long does it take?",
-        a: "Small fixes usually take 1 to 2 days, a one-page website 3 to 5 days. Your quote always includes a delivery date.",
+        a: "A quick fix takes 1–2 days, a one-page website 3–5 days. Your quote always has a date.",
       },
       {
         q: "Which languages do you work in?",
@@ -269,9 +254,8 @@ export const services = {
   },
 
   contact: {
-    label: "Contact",
-    title: "Let’s see what your website could do better",
-    body: "Send me your website link, or a few lines about your business if you don’t have a site yet. I’ll reply with a free check or a clear quote, usually within a day.",
+    title: "Ready to get more from your website?",
+    body: "Send me your link. You’ll get a free check or a clear quote.",
     primaryCta: "Email me",
     /** Prefilled subject and body for the mailto: link. */
     emailSubject: "Free site check",
@@ -280,6 +264,11 @@ export const services = {
     whatsappCta: "WhatsApp",
     /** Shown before the plain email address, for apps where the button can't open email. */
     orWriteTo: "Or write to",
-    whatsapp: todo("Add a WhatsApp number (wa.me link) if you want a WhatsApp button"),
+    whatsapp: todo(
+      "Add a WhatsApp link (https://wa.me/<number>) for a WhatsApp button: clients from Instagram and WhatsApp often prefer to message there",
+    ),
   },
+
+  /** Button pinned to the bottom of the screen on phones while scrolling. */
+  stickyCta: "Get a free site check",
 } as const;

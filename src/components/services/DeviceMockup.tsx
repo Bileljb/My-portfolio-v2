@@ -12,9 +12,13 @@ export default function DeviceMockup({ shots }: { shots: DeviceShots }) {
   return (
     <div role="img" aria-label={shots.alt} className="relative aspect-[100/64] w-full">
       {/* Laptop: screen plus a thin base */}
-      <div className="absolute top-0 right-0 w-[80%]">
+      <div className="absolute top-0 right-[4%] w-[78%]">
         <div className={`${frame} rounded-t-lg p-[1.6%]`}>
-          <Screen shot={shots.laptop} className="aspect-[16/10] rounded-sm" />
+          <Screen
+            shot={shots.laptop}
+            className="aspect-[16/10] rounded-sm"
+            position="object-left-top"
+          />
         </div>
         <div className={`${frame} mx-[-5%] h-2 rounded-b-lg sm:h-3`} />
       </div>
@@ -36,7 +40,16 @@ export default function DeviceMockup({ shots }: { shots: DeviceShots }) {
   );
 }
 
-function Screen({ shot, className }: { shot: Shot; className: string }) {
+/** position: which part of the image stays visible when its shape differs from the screen. */
+function Screen({
+  shot,
+  className,
+  position = "object-top",
+}: {
+  shot: Shot;
+  className: string;
+  position?: string;
+}) {
   return (
     <div className={`bg-surface overflow-hidden ${className}`}>
       <img
@@ -46,7 +59,7 @@ function Screen({ shot, className }: { shot: Shot; className: string }) {
         height={shot.height}
         loading="lazy"
         decoding="async"
-        className="size-full object-cover object-top"
+        className={`size-full object-cover ${position}`}
       />
     </div>
   );
