@@ -11,6 +11,10 @@ const router = createBrowserRouter(
       children: [
         { index: true, Component: Home },
         {
+          path: "services",
+          lazy: () => import("./pages/Services.tsx").then((m) => ({ Component: m.default })),
+        },
+        {
           path: "projects/:slug",
           lazy: () => import("./pages/ProjectPage.tsx").then((m) => ({ Component: m.default })),
         },

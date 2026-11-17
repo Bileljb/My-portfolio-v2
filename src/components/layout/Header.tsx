@@ -4,6 +4,7 @@ import { assetUrl } from "../../lib/assetUrl.ts";
 import ThemeToggle from "./ThemeToggle.tsx";
 
 const nav = [
+  { label: "Services", to: "/services" },
   { label: "Work", to: "/#work" },
   { label: "About", to: "/#about" },
   { label: "Contact", to: "/#contact" },
@@ -30,7 +31,7 @@ export default function Header() {
               <li key={item.to}>
                 <Link
                   to={item.to}
-                  className="text-muted hover:text-fg px-2 py-2 font-mono text-xs tracking-wide uppercase transition-colors sm:px-3 sm:text-sm"
+                  className="text-muted hover:text-fg px-1 py-2 font-mono text-xs tracking-wide uppercase transition-colors sm:px-3 sm:text-sm"
                 >
                   {item.label}
                 </Link>
@@ -41,7 +42,7 @@ export default function Header() {
                 <a
                   href={assetUrl(profile.links.cv)}
                   download
-                  className="text-accent-text hover:text-fg px-2 py-2 font-mono text-xs tracking-wide uppercase transition-colors sm:px-3 sm:text-sm"
+                  className="text-accent-text hover:text-fg px-1 py-2 font-mono text-xs tracking-wide uppercase transition-colors sm:px-3 sm:text-sm"
                 >
                   CV
                 </a>

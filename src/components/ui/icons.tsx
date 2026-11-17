@@ -43,6 +43,14 @@ export function LinkedInIcon(props: IconProps) {
   );
 }
 
+export function CheckIcon(props: IconProps) {
+  return (
+    <svg {...base} fill="none" stroke="currentColor" strokeWidth={2.25} {...props}>
+      <path d="m5 12.5 4.5 4.5L19 7.5" strokeLinecap="round" strokeLinejoin="round" />
+    </svg>
+  );
+}
+
 export function MailIcon(props: IconProps) {
   return (
     <svg {...base} fill="none" stroke="currentColor" strokeWidth={1.75} {...props}>
