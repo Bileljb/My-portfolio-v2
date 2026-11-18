@@ -1,18 +1,54 @@
-import { useEffect, useState, type CSSProperties, type ReactNode } from "react";
+import "@fontsource-variable/noto-kufi-arabic";
+import "@fontsource-variable/noto-sans-arabic";
+import {
+  createContext,
+  useContext,
+  useEffect,
+  useState,
+  type CSSProperties,
+  type ReactNode,
+} from "react";
 import { Link } from "react-router";
 import DeviceMockup from "../components/services/DeviceMockup.tsx";
 import ServiceArt from "../components/services/ServiceArt.tsx";
 import { CheckIcon, LinkedInIcon, MailIcon } from "../components/ui/icons.tsx";
 import TodoText from "../components/ui/TodoText.tsx";
 import { profile } from "../data/profile.ts";
-import { services, type Service, type ShowcaseProject } from "../data/services.ts";
+import { whatsapp as whatsappLink } from "../data/services-media.ts";
+import {
+  languageInfo,
+  languages,
+  services,
+  type Lang,
+  type Language,
+  type Service,
+  type ServicesCopy,
+  type ShowcaseProject,
+} from "../data/services.ts";
 import { usePageMeta } from "../hooks/usePageMeta.ts";
 import { getProject } from "../lib/projects.ts";
 import { isRenderable, textOrNull } from "../lib/todo.ts";
 
 /**
- * Page for small-business owners (not recruiters). All copy comes from src/data/services.ts.
+ * Page for small-business owners (not recruiters), in English (/services), French
+ * (/fr/services) and Arabic (/ar/services, right to left). All copy comes from
+ * src/data/services.ts and its .fr/.ar siblings.
  */
+
+interface PageContext {
+  t: ServicesCopy;
+  language: Language;
+  /** Points forward in the reading direction. */
+  arrow: string;
+}
+
+const Ctx = createContext<PageContext | null>(null);
+
+function usePage(): PageContext {
+  const ctx = useContext(Ctx);
+  if (!ctx) throw new Error("usePage must be used inside the Services page");
+  return ctx;
+}
 
 const email = textOrNull(profile.email);
 
@@ -23,18 +59,20 @@ function mailto(subject: string, body = ""): string {
 }
 
 const buttonBase =
-  "inline-flex min-h-12 items-center justify-center gap-2 rounded-full border-2 px-7 py-3 text-base font-semibold transition-[transform,box-shadow,background-color,color] motion-reduce:transition-none";
+  "inline-flex min-h-12 items-center justify-center gap-2 rounded-full text-center sm:whitespace-nowrap border-2 px-7 py-3 text-base font-semibold transition-[transform,box-shadow,background-color,color] motion-reduce:transition-none";
 const buttonStyles = {
   primary: `${buttonBase} bg-accent-fill text-on-accent border-accent-fill shadow-[0_8px_24px_-8px_var(--color-accent)] hover:-translate-y-0.5`,
   secondary: `${buttonBase} border-fg text-fg hover:bg-fg hover:text-bg`,
 };
 
-export default function Services() {
-  usePageMeta(services.meta);
+export default function Services({ lang = "en" }: { lang?: Lang }) {
+  const t = services[lang];
+  const language = languageInfo[lang];
+  usePageMeta({ ...t.meta, lang, alternates: languages });
 
   return (
-    <>
-      <div className="mx-auto max-w-6xl px-4 sm:px-6">
+    <Ctx.Provider value={{ t, language, arrow: language.dir === "rtl" ? "←" : "→" }}>
+      <div lang={lang} dir={language.dir} className="mx-auto max-w-6xl px-4 sm:px-6">
         <Hero />
         <ServicesList />
         <Projects />
@@ -43,12 +81,44 @@ export default function Services() {
         <FinalCta />
       </div>
       <StickyCta />
-    </>
+    </Ctx.Provider>
+  );
+}
+
+/** Links to the same page in the other languages. */
+function LanguageSwitcher() {
+  const { t, language } = usePage();
+  return (
+    <nav aria-label={t.languageLabel}>
+      <ul className="flex flex-wrap gap-2">
+        {languages.map((l) => {
+          const current = l.lang === language.lang;
+          return (
+            <li key={l.lang}>
+              <Link
+                to={l.path}
+                lang={l.lang}
+                hrefLang={l.lang}
+                aria-current={current ? "page" : undefined}
+                className={`inline-flex min-h-10 items-center rounded-full border px-4 text-sm font-medium transition-colors motion-reduce:transition-none ${
+                  current
+                    ? "border-fg bg-fg text-bg"
+                    : "border-rule text-muted hover:border-fg hover:text-fg"
+                }`}
+              >
+                {l.label}
+              </Link>
+            </li>
+          );
+        })}
+      </ul>
+    </nav>
   );
 }
 
 function Hero() {
-  const { hero } = services;
+  const { t, arrow } = usePage();
+  const { hero } = t;
   return (
     <section
       id="services-hero"
@@ -56,7 +126,8 @@ function Hero() {
       className="grid items-center gap-12 pt-10 pb-16 sm:pt-16 sm:pb-20 lg:grid-cols-[1fr_1.15fr] lg:gap-12"
     >
       <div>
-        <p className="text-accent-text text-sm font-semibold tracking-wider uppercase">
+        <LanguageSwitcher />
+        <p className="text-accent-text mt-8 text-sm font-semibold tracking-wider uppercase">
           {hero.eyebrow}
         </p>
         <h1
@@ -66,9 +137,9 @@ function Hero() {
           {hero.headline}
         </h1>
         <p className="text-muted mt-6 max-w-lg text-lg leading-relaxed sm:text-xl">{hero.sub}</p>
-        <div className="mt-8 flex flex-col gap-3 sm:flex-row">
+        <div className="mt-8 flex flex-col gap-3 sm:flex-row sm:flex-wrap">
           <a href="#contact" className={buttonStyles.primary}>
-            {hero.primaryCta} →
+            {hero.primaryCta} {arrow}
           </a>
           <a href="#services" className={buttonStyles.secondary}>
             {hero.secondaryCta}
@@ -124,7 +195,8 @@ const cardSpans = [
 ];
 
 function ServicesList() {
-  const s = services.servicesSection;
+  const { t, arrow } = usePage();
+  const s = t.servicesSection;
   const u = s.unsure;
   return (
     <Block id="services" label={s.label} title={s.title} intro={s.intro}>
@@ -141,7 +213,7 @@ function ServicesList() {
           <span className="text-muted">{u.body}</span>
         </p>
         <a href="#contact" className={`${buttonStyles.secondary} shrink-0`}>
-          {u.cta} →
+          {u.cta} {arrow}
         </a>
       </div>
     </Block>
@@ -168,7 +240,7 @@ function ServiceCard({ service }: { service: Service }) {
 }
 
 function Projects() {
-  const s = services.projectsSection;
+  const s = usePage().t.projectsSection;
   return (
     <Block id="projects" label={s.label} title={s.title} intro={s.intro}>
       <ul className="space-y-16 sm:space-y-24">
@@ -185,7 +257,7 @@ function Projects() {
 function ShowcaseRow({ project, flip }: { project: ShowcaseProject; flip: boolean }) {
   const caseStudy = getProject(project.slug);
   const live = caseStudy?.links.live;
-  const s = services.projectsSection;
+  const s = usePage().t.projectsSection;
 
   return (
     <article className="grid items-center gap-8 lg:grid-cols-[1.4fr_1fr] lg:gap-16">
@@ -197,7 +269,7 @@ function ShowcaseRow({ project, flip }: { project: ShowcaseProject; flip: boolea
         <p className="text-muted mt-1 text-base">{project.credit}</p>
         <TodoText value={project.summary} as="p" className="mt-5 text-lg leading-relaxed" />
         {isRenderable(project.forYou) && (
-          <p className="border-accent mt-5 border-l-2 pl-4 text-lg">
+          <p className="border-accent mt-5 border-s-2 ps-4 text-lg">
             <span className="text-accent-text font-semibold">{s.forYouLabel}: </span>
             <TodoText value={project.forYou} />
           </p>
@@ -218,7 +290,7 @@ function ShowcaseRow({ project, flip }: { project: ShowcaseProject; flip: boolea
               to={`/projects/${project.slug}`}
               className="text-muted hover:text-fg inline-flex min-h-11 items-center text-base underline underline-offset-4"
             >
-              {s.linkLabel} <span className="sr-only">about {project.name}</span>
+              {s.linkLabel} <span className="sr-only">: {project.name}</span>
             </Link>
           )}
         </div>
@@ -228,7 +300,7 @@ function ShowcaseRow({ project, flip }: { project: ShowcaseProject; flip: boolea
 }
 
 function HowItWorks() {
-  const s = services.howItWorks;
+  const s = usePage().t.howItWorks;
   return (
     <Block id="how-it-works" label={s.label} title={s.title}>
       <ol className="grid gap-8 md:grid-cols-3 md:gap-10">
@@ -250,7 +322,7 @@ function HowItWorks() {
 }
 
 function Faq() {
-  const s = services.faq;
+  const s = usePage().t.faq;
   return (
     <section
       id="faq"
@@ -290,8 +362,8 @@ function Faq() {
 }
 
 function FinalCta() {
-  const c = services.contact;
-  const whatsapp = textOrNull(c.whatsapp);
+  const c = usePage().t.contact;
+  const whatsapp = textOrNull(whatsappLink);
   return (
     <section
       id="contact"
@@ -331,7 +403,7 @@ function FinalCta() {
       )}
       {!whatsapp && (
         <div className="mx-auto mt-4 w-fit max-w-full">
-          <TodoText value={c.whatsapp} />
+          <TodoText value={whatsappLink} />
         </div>
       )}
     </section>
@@ -343,6 +415,7 @@ function FinalCta() {
  * the hero has scrolled away, hidden again when the contact section is on screen.
  */
 function StickyCta() {
+  const { t, language, arrow } = usePage();
   const [heroVisible, setHeroVisible] = useState(true);
   const [contactVisible, setContactVisible] = useState(false);
 
@@ -363,9 +436,13 @@ function StickyCta() {
 
   if (heroVisible || contactVisible) return null;
   return (
-    <div className="border-rule bg-bg/95 fixed inset-x-0 bottom-0 z-30 border-t px-4 py-3 backdrop-blur sm:hidden">
+    <div
+      lang={language.lang}
+      dir={language.dir}
+      className="border-rule bg-bg/95 fixed inset-x-0 bottom-0 z-30 border-t px-4 py-3 backdrop-blur sm:hidden"
+    >
       <a href="#contact" className={`${buttonStyles.primary} w-full`}>
-        {services.stickyCta} →
+        {t.stickyCta} {arrow}
       </a>
     </div>
   );

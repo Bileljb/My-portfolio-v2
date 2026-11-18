@@ -129,3 +129,24 @@
     }
   }
 }
+
+/*
+ * Arabic (/ar/services). Latin fonts first so names like "Google" keep the site's
+ * look; Arabic letters fall through to Noto. Unlayered, so these win over utilities.
+ */
+[lang="ar"] {
+  font-family: "Inter Variable", "Noto Sans Arabic Variable", ui-sans-serif, system-ui, sans-serif;
+}
+
+[lang="ar"] :is(h1, h2, h3, h4) {
+  font-family:
+    "Space Grotesk Variable", "Noto Kufi Arabic Variable", ui-sans-serif, system-ui, sans-serif;
+  /* Arabic letters sit taller and need more room between lines */
+  line-height: 1.4;
+}
+
+/* Letter spacing breaks the joins between Arabic letters */
+[lang="ar"],
+[lang="ar"] * {
+  letter-spacing: 0;
+}

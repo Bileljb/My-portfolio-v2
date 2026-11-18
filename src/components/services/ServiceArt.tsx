@@ -32,16 +32,7 @@ function Browser({
 }) {
   return (
     <g>
-      <rect
-        x={x}
-        y={y}
-        width={w}
-        height={h}
-        rx={10}
-        fill={c.bg}
-        stroke={c.rule}
-        strokeWidth={2}
-      />
+      <rect x={x} y={y} width={w} height={h} rx={10} fill={c.bg} stroke={c.rule} strokeWidth={2} />
       <path d={`M${x} ${y + 22}h${w}`} stroke={c.rule} strokeWidth={2} />
       {[0, 1, 2].map((i) => (
         <circle key={i} cx={x + 14 + i * 11} cy={y + 11} r={3.2} fill={c.rule} />

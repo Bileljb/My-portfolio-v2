@@ -1,9 +1,13 @@
 import { todo } from "../lib/todo.ts";
+import { heroShots, projectShots } from "./services-media.ts";
+import { ar } from "./services.ar.ts";
+import { fr } from "./services.fr.ts";
 import type { Text } from "./types.ts";
 
 /**
  * All copy for the /services page (written for business owners, not recruiters).
- * Edit text here; the page renders from this file.
+ * English is here; French is in services.fr.ts and Arabic in services.ar.ts, with
+ * the same shape. Pictures and links shared by all three are in services-media.ts.
  * Keep it short: one idea per line. Unknown facts use todo("…"): a visible badge
  * in dev, hidden in production.
  */
@@ -52,14 +56,77 @@ export interface ShowcaseProject {
   shots: DeviceShots;
 }
 
-const shot = (src: string, width: number, height: number): Shot => ({ src, width, height });
+export type Lang = "en" | "fr" | "ar";
 
-export const services = {
+export interface Language {
+  lang: Lang;
+  /** The language's own name, shown in the switcher. */
+  label: string;
+  path: string;
+  dir: "ltr" | "rtl";
+}
+
+export const languageInfo: Record<Lang, Language> = {
+  en: { lang: "en", label: "English", path: "/services", dir: "ltr" },
+  fr: { lang: "fr", label: "Français", path: "/fr/services", dir: "ltr" },
+  ar: { lang: "ar", label: "العربية", path: "/ar/services", dir: "rtl" },
+};
+
+/** In switcher order. */
+export const languages: readonly Language[] = Object.values(languageInfo);
+
+export interface ServicesCopy {
+  meta: { title: string; description: string };
+  /** Screen-reader name for the language switcher. */
+  languageLabel: string;
+  hero: {
+    eyebrow: string;
+    headline: string;
+    sub: string;
+    trust: readonly string[];
+    primaryCta: string;
+    secondaryCta: string;
+    shots: DeviceShots;
+  };
+  servicesSection: {
+    label: string;
+    title: string;
+    intro: string;
+    items: readonly Service[];
+    /** Line after the cards, for visitors who aren't sure yet. */
+    unsure: { title: string; body: string; cta: string };
+  };
+  projectsSection: {
+    label: string;
+    title: string;
+    intro: string;
+    forYouLabel: string;
+    linkLabel: string;
+    liveLabel: string;
+    items: readonly ShowcaseProject[];
+  };
+  howItWorks: { label: string; title: string; steps: readonly { title: string; body: string }[] };
+  faq: { label: string; title: string; items: readonly { q: string; a: Text }[] };
+  contact: {
+    title: string;
+    body: string;
+    primaryCta: string;
+    emailSubject: string;
+    emailBody: string;
+    linkedinCta: string;
+    whatsappCta: string;
+    orWriteTo: string;
+  };
+  stickyCta: string;
+}
+
+const en: ServicesCopy = {
   meta: {
     title: "Websites for small businesses · Bilel Jabrane",
     description:
       "Fast, modern websites for small businesses: landing pages, quick fixes, speed and Google visibility, and launch help. Get a free check of your current site.",
   },
+  languageLabel: "Language",
 
   hero: {
     eyebrow: "Websites for small businesses",
@@ -69,9 +136,7 @@ export const services = {
     primaryCta: "Get a free site check",
     secondaryCta: "See services",
     shots: {
-      laptop: shot("/projects/loupe/device-laptop.webp", 1440, 900),
-      tablet: shot("/projects/oneplace/device-tablet.webp", 600, 863),
-      phone: shot("/projects/tamreenlab/device-phone.webp", 390, 844),
+      ...heroShots,
       alt: "Three websites I built: a website report on a laptop, a community feed on a tablet and an Arabic learning site on a phone",
     },
   },
@@ -138,7 +203,6 @@ export const services = {
         includes: ["We talk first", "Fixed quote before I start", "Updates as it takes shape"],
       },
     ] satisfies Service[],
-    /** Highlighted box after the cards, for visitors who aren't sure yet. */
     unsure: {
       title: "Not sure what you need?",
       body: "Start with a free site check. I’ll tell you what to fix first.",
@@ -162,9 +226,7 @@ export const services = {
           "A membership platform where people pay, join, take courses and talk to each other, all in one place.",
         forYou: "Sell memberships or classes without juggling five different apps.",
         shots: {
-          laptop: shot("/projects/oneplace/community-feed.webp", 1498, 817),
-          tablet: shot("/projects/oneplace/device-tablet.webp", 600, 863),
-          phone: shot("/projects/oneplace/device-phone.webp", 390, 844),
+          ...projectShots.oneplace,
           alt: "OnePlace community feed with member posts, a members count and a points leaderboard, shown on a laptop, a tablet and a phone",
         },
       },
@@ -176,9 +238,7 @@ export const services = {
           "A free tool that grades any website and explains each problem in plain English, French or Arabic.",
         forYou: "The same eye I’ll bring to your free site check, without the jargon.",
         shots: {
-          laptop: shot("/projects/loupe/device-laptop.webp", 1440, 900),
-          tablet: shot("/projects/loupe/device-tablet.webp", 600, 863),
-          phone: shot("/projects/loupe/device-phone.webp", 390, 844),
+          ...projectShots.loupe,
           alt: "Loupe example report for a bakery website with a B grade and an overall score of 86 out of 100, shown on a laptop, a tablet and a phone",
         },
       },
@@ -190,9 +250,7 @@ export const services = {
           "An Excel practice site in Arabic, English and French, with instant feedback on every answer.",
         forYou: "Welcome every customer in their own language, Arabic included.",
         shots: {
-          laptop: shot("/projects/tamreenlab/device-laptop.webp", 1440, 900),
-          tablet: shot("/projects/tamreenlab/device-tablet.webp", 600, 863),
-          phone: shot("/projects/tamreenlab/device-phone.webp", 390, 844),
+          ...projectShots.tamreenlab,
           alt: "TamreenLab Arabic home page titled “Learn Excel by practice”, with a small practice spreadsheet adding up a column, shown on a laptop, a tablet and a phone",
         },
       },
@@ -250,11 +308,10 @@ export const services = {
     whatsappCta: "WhatsApp",
     /** Shown before the plain email address, for apps where the button can't open email. */
     orWriteTo: "Or write to",
-    whatsapp: todo(
-      "Add a WhatsApp link (https://wa.me/<number>) for a WhatsApp button: clients from Instagram and WhatsApp often prefer to message there",
-    ),
   },
 
   /** Button pinned to the bottom of the screen on phones while scrolling. */
   stickyCta: "Get a free site check",
-} as const;
+};
+
+export const services: Record<Lang, ServicesCopy> = { en, fr, ar };
