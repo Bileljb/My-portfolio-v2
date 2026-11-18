@@ -3,8 +3,8 @@ import { profile } from "../../data/profile.ts";
 import { assetUrl } from "../../lib/assetUrl.ts";
 import ThemeToggle from "./ThemeToggle.tsx";
 
+// /services is left out on purpose: it is shared directly with potential clients.
 const nav = [
-  { label: "Services", to: "/services" },
   { label: "Work", to: "/#work" },
   { label: "About", to: "/#about" },
   { label: "Contact", to: "/#contact" },
