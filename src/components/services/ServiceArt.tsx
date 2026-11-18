@@ -38,7 +38,7 @@ function Browser({
         width={w}
         height={h}
         rx={10}
-        fill={c.surface}
+        fill={c.bg}
         stroke={c.rule}
         strokeWidth={2}
       />
@@ -86,7 +86,7 @@ const art: Record<ArtName, ReactNode> = {
       <g transform="translate(236 66) rotate(45)">
         <rect x={-7} y={0} width={14} height={78} rx={7} fill={c.fg} />
         <circle cx={0} cy={0} r={20} fill={c.fg} />
-        <rect x={-7} y={-24} width={14} height={18} rx={2} fill={c.bg} />
+        <rect x={-7} y={-24} width={14} height={18} rx={2} fill={c.surface} />
       </g>
       <circle cx={262} cy={134} r={17} fill={c.accent} />
       <path
@@ -104,16 +104,16 @@ const art: Record<ArtName, ReactNode> = {
   page: (
     <>
       <Browser x={24} y={34} w={150} h={112}>
-        <rect x={36} y={68} width={126} height={34} rx={6} fill={c.bg} />
+        <rect x={36} y={68} width={126} height={34} rx={6} fill={c.surface} />
         {line(44, 76, 70, c.muted, 6)}
         {line(44, 88, 50, c.rule, 6)}
-        <rect x={36} y={112} width={58} height={22} rx={6} fill={c.bg} />
-        <rect x={104} y={112} width={58} height={22} rx={6} fill={c.bg} />
+        <rect x={36} y={112} width={58} height={22} rx={6} fill={c.surface} />
+        <rect x={104} y={112} width={58} height={22} rx={6} fill={c.surface} />
       </Browser>
       <rect x={186} y={16} width={88} height={150} rx={16} fill={c.fg} />
-      <rect x={192} y={22} width={76} height={138} rx={11} fill={c.surface} />
+      <rect x={192} y={22} width={76} height={138} rx={11} fill={c.bg} />
       <rect x={218} y={28} width={24} height={5} rx={2.5} fill={c.rule} />
-      <rect x={200} y={44} width={60} height={34} rx={6} fill={c.bg} />
+      <rect x={200} y={44} width={60} height={34} rx={6} fill={c.surface} />
       {line(206, 52, 40, c.muted, 6)}
       {line(206, 64, 28, c.rule, 6)}
       {line(200, 88, 52)}
@@ -124,7 +124,7 @@ const art: Record<ArtName, ReactNode> = {
       <path
         d="M248 132v18l5 -5 4 9 4 -2 -4 -9h7Z"
         fill={c.fg}
-        stroke={c.surface}
+        stroke={c.bg}
         strokeWidth={2}
         strokeLinejoin="round"
       />
@@ -158,7 +158,7 @@ const art: Record<ArtName, ReactNode> = {
         width={112}
         height={22}
         rx={11}
-        fill={c.surface}
+        fill={c.bg}
         stroke={c.rule}
         strokeWidth={2}
       />
@@ -172,7 +172,7 @@ const art: Record<ArtName, ReactNode> = {
         width={112}
         height={34}
         rx={8}
-        fill={c.surface}
+        fill={c.bg}
         stroke={c.accent}
         strokeWidth={2.5}
       />
@@ -195,7 +195,7 @@ const art: Record<ArtName, ReactNode> = {
             width={112}
             height={28}
             rx={8}
-            fill={c.surface}
+            fill={c.bg}
             stroke={c.rule}
             strokeWidth={2}
           />
@@ -215,7 +215,7 @@ const art: Record<ArtName, ReactNode> = {
         width={260}
         height={34}
         rx={17}
-        fill={c.surface}
+        fill={c.bg}
         stroke={c.rule}
         strokeWidth={2}
       />
@@ -225,7 +225,7 @@ const art: Record<ArtName, ReactNode> = {
       {line(188, 35, 40, c.rule)}
 
       <g fill="none" stroke={c.fg} strokeWidth={2.5}>
-        <circle cx={110} cy={118} r={40} fill={c.surface} />
+        <circle cx={110} cy={118} r={40} fill={c.bg} />
         <ellipse cx={110} cy={118} rx={17} ry={40} />
         <path d="M70 118h80M76 98h68M76 138h68" />
       </g>
@@ -245,7 +245,7 @@ const art: Record<ArtName, ReactNode> = {
             width={92}
             height={24}
             rx={6}
-            fill={c.surface}
+            fill={c.bg}
             stroke={c.rule}
             strokeWidth={2}
           />
@@ -273,7 +273,7 @@ const art: Record<ArtName, ReactNode> = {
               width={34}
               height={18}
               rx={5}
-              fill={picked ? c.accent : c.bg}
+              fill={picked ? c.accent : c.surface}
               stroke={picked ? c.accent : c.rule}
               strokeWidth={1.5}
             />
@@ -284,7 +284,7 @@ const art: Record<ArtName, ReactNode> = {
         <path
           d="M0 0h18v-7a8 8 0 1 1 16 0v7h18v18h-7a8 8 0 1 0 0 16h7v18H0V33h7a8 8 0 1 0 0 -16H0Z"
           fill={c.accent}
-          stroke={c.surface}
+          stroke={c.bg}
           strokeWidth={3}
           strokeLinejoin="round"
         />
@@ -305,7 +305,7 @@ export default function ServiceArt({ name }: { name: ArtName }) {
   return (
     <svg
       viewBox="0 0 320 180"
-      className="bg-bg border-rule block aspect-[16/9] w-full rounded-2xl border"
+      className="block h-40 w-full sm:h-44"
       aria-hidden="true"
       focusable="false"
     >

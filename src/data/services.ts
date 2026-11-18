@@ -63,9 +63,8 @@ export const services = {
 
   hero: {
     eyebrow: "Websites for small businesses",
-    headline:
-      "I build fast, modern websites for small businesses, and I’ll show you for free what’s wrong with yours.",
-    sub: "Send me your link. I’ll show you what’s costing you customers, in plain words.",
+    headline: "Websites that bring you more customers.",
+    sub: "I build fast, modern websites for small businesses. Send me your link and I’ll show you, for free, what’s costing you customers.",
     trust: ["Free site check", "A clear quote before I start", "Half upfront, half when done"],
     primaryCta: "Get a free site check",
     secondaryCta: "See services",
