@@ -3,7 +3,7 @@ import type { Text } from "./types.ts";
 
 /**
  * All copy for the /services page (written for business owners, not recruiters).
- * Edit text and delivery times here; the page renders from this file.
+ * Edit text here; the page renders from this file.
  * Keep it short: one idea per line. Unknown facts use todo("…"): a visible badge
  * in dev, hidden in production.
  */
@@ -21,8 +21,6 @@ export interface Service {
   forWho: string;
   /** 3 short points, a few words each. */
   includes: readonly string[];
-  delivery: string;
-  cta: string;
 }
 
 export interface Shot {
@@ -83,7 +81,6 @@ export const services = {
     label: "Services",
     title: "Pick what your business needs",
     intro: "Tell me what you need. You get a clear quote before any work starts.",
-    deliveryLabel: "Ready in",
     items: [
       {
         id: "quick-fix",
@@ -96,8 +93,6 @@ export const services = {
           "Checked on phone and computer",
           "A short note on the fix",
         ],
-        delivery: "1–2 days",
-        cta: "Fix my website",
       },
       {
         id: "landing-page",
@@ -110,8 +105,6 @@ export const services = {
           "Call, message or book buttons",
           "Ready for Google",
         ],
-        delivery: "3–5 days",
-        cta: "Start my website",
       },
       {
         id: "speed-seo",
@@ -124,8 +117,6 @@ export const services = {
           "Better Google search results",
           "Before-and-after check",
         ],
-        delivery: "2–4 days",
-        cta: "Speed up my website",
       },
       {
         id: "launch",
@@ -138,8 +129,6 @@ export const services = {
           "The browser padlock (SSL)",
           "Hosting that keeps you online",
         ],
-        delivery: "1–2 days",
-        cta: "Put my website online",
       },
       {
         id: "custom",
@@ -148,8 +137,6 @@ export const services = {
         title: "A tool built around how you work",
         forWho: "Online booking, a customer area, an order form…",
         includes: ["We talk first", "Fixed quote before I start", "Updates as it takes shape"],
-        delivery: "Agreed in the quote",
-        cta: "Tell me what you need",
       },
     ] satisfies Service[],
     /** Highlighted box after the cards, for visitors who aren't sure yet. */

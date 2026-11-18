@@ -1,7 +1,7 @@
 import { useEffect, useState, type CSSProperties, type ReactNode } from "react";
 import { Link } from "react-router";
 import DeviceMockup from "../components/services/DeviceMockup.tsx";
-import ServiceIcon from "../components/services/ServiceIcon.tsx";
+import ServiceArt from "../components/services/ServiceArt.tsx";
 import { CheckIcon, LinkedInIcon, MailIcon } from "../components/ui/icons.tsx";
 import TodoText from "../components/ui/TodoText.tsx";
 import { profile } from "../data/profile.ts";
@@ -11,8 +11,7 @@ import { getProject } from "../lib/projects.ts";
 import { isRenderable, textOrNull } from "../lib/todo.ts";
 
 /**
- * Page for small-business owners (not recruiters). All copy and delivery
- * times come from src/data/services.ts.
+ * Page for small-business owners (not recruiters). All copy comes from src/data/services.ts.
  */
 
 const email = textOrNull(profile.email);
@@ -137,40 +136,24 @@ function ServicesList() {
 }
 
 function ServiceCard({ service }: { service: Service }) {
-  const s = services.servicesSection;
   return (
-    <article className="border-rule bg-surface hover:border-fg flex h-full flex-col rounded-3xl border p-7 transition-colors motion-reduce:transition-none">
-      <div className="flex items-center gap-3">
-        <span className="bg-bg text-accent-text grid size-12 place-items-center rounded-2xl">
-          <ServiceIcon name={service.icon} />
-        </span>
+    <article className="border-rule bg-surface hover:border-fg flex h-full flex-col rounded-3xl border p-5 transition-colors motion-reduce:transition-none">
+      <ServiceArt name={service.icon} />
+
+      <div className="px-2 pt-6 pb-2">
         <p className="text-muted text-sm font-semibold tracking-wider uppercase">{service.name}</p>
+        <h3 className="mt-3 text-2xl leading-snug font-semibold">{service.title}</h3>
+        <p className="text-muted mt-2 text-base">{service.forWho}</p>
+
+        <ul className="border-rule mt-6 space-y-2.5 border-t pt-6">
+          {service.includes.map((point) => (
+            <li key={point} className="flex gap-2.5 text-base">
+              <CheckIcon width={18} height={18} className="text-accent-text mt-0.5 shrink-0" />
+              {point}
+            </li>
+          ))}
+        </ul>
       </div>
-
-      <h3 className="mt-6 text-2xl leading-snug font-semibold">{service.title}</h3>
-      <p className="text-muted mt-2 text-base">{service.forWho}</p>
-
-      <ul className="border-rule mt-6 space-y-2.5 border-t pt-6">
-        {service.includes.map((point) => (
-          <li key={point} className="flex gap-2.5 text-base">
-            <CheckIcon width={18} height={18} className="text-accent-text mt-0.5 shrink-0" />
-            {point}
-          </li>
-        ))}
-      </ul>
-
-      <p className="text-muted mt-auto mb-5 flex items-center gap-2 pt-8 text-sm">
-        <span className="bg-accent size-2 rounded-full" aria-hidden="true" />
-        {s.deliveryLabel} <span className="text-fg font-semibold">{service.delivery}</span>
-      </p>
-
-      <a
-        href={mailto(service.title)}
-        className={`${buttonStyles.secondary} w-full`}
-        aria-label={`${service.cta}: email me about “${service.title}”`}
-      >
-        {service.cta}
-      </a>
     </article>
   );
 }
